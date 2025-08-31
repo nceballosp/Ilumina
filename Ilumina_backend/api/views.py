@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .models import *
 
 # Viewset CRUD del modelo documento
-class DocumentViewset(viewsets.ViewSet):
+class DocumentViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
