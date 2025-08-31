@@ -1,0 +1,67 @@
+# Ignorar entornos virtuales
+venv/
+.env/
+env/
+.venv/
+/__pycache__
+
+# Archivos de Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de log y dumps
+*.log
+*.pot
+*.pyc
+*.pyo
+
+# Archivos de configuración/locales
+.env
+*.sqlite3
+
+# Archivos de test coverage
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Archivos de editor/IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de base de datos
+db.sqlite3
+
+# Archivos de migraciones que no quieres compartir (opcional, si generas mucho)
+**/migrations/*.pyc
+**/migrations/__pycache__/
+# **/migrations/ si deseas ignorarlas completamente (no recomendado para trabajo en equipo)
+
+# Archivos de Django generados
+staticfiles/
+static/
+media/documents/*
+
+*.pot
+
+# Archivos de Docker (si usas)
+*.pid
+*.swp
+
+# Archivos de node (si usas npm/yarn para manejar frontend)
+node_modules/
+build/
+dist/
+*.lock
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
