@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
+
 class Account(models.Model):
     code = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=200)
@@ -16,7 +17,8 @@ class Account(models.Model):
         if self.pk:
             original = Account.objects.get(pk=self.pk)
             if original.name != self.name:
-                raise ValidationError("El nombre de la cuenta es inmutable y no puede cambiarse.")
+                raise ValidationError(
+                    "El nombre de la cuenta es inmutable y no puede cambiarse.")
         super().save(*args, **kwargs)
 
 
@@ -24,7 +26,8 @@ class CostCenter(models.Model):
     code = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
-    accounts = models.ManyToManyField(Account, through="CostCenterAccount", related_name="cost_centers", blank=True)
+    accounts = models.ManyToManyField(
+        Account, through="CostCenterAccount", related_name="cost_centers", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -52,20 +55,26 @@ class CostCenterAccount(models.Model):
 
     def __str__(self):
         return f"{self.cost_center.name} - {self.account.name}"
-    
+
+
 class AnnualBudget(models.Model):
 
-    cost_center_account = models.ForeignKey(CostCenterAccount, on_delete=models.CASCADE, related_name="annual_budgets")
+    cost_center_account = models.ForeignKey(
+        CostCenterAccount, on_delete=models.CASCADE, related_name="annual_budgets")
     year = models.PositiveIntegerField()
-    budget_amount = models.DecimalField(max_digits=16, decimal_places=2, default=0)
-    executed_amount = models.DecimalField(max_digits=16, decimal_places=2, default=0)
-    available_amount = models.DecimalField(max_digits=16, decimal_places=2, default=0)
+    budget_amount = models.DecimalField(
+        max_digits=16, decimal_places=2, default=0)
+    executed_amount = models.DecimalField(
+        max_digits=16, decimal_places=2, default=0)
+    available_amount = models.DecimalField(
+        max_digits=16, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = [("cost_center_account", "year")]
-        ordering = ["-year", "cost_center_account__cost_center__code", "cost_center_account__account__code"]
+        ordering = ["-year", "cost_center_account__cost_center__code",
+                    "cost_center_account__account__code"]
         indexes = [
             models.Index(fields=["year"]),
             models.Index(fields=["cost_center_account", "year"]),
@@ -74,6 +83,3 @@ class AnnualBudget(models.Model):
     def __str__(self):
         cca = self.cost_center_account
         return f"{cca.cost_center.name} - {cca.account.name} - {self.year}"
-
-
-

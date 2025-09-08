@@ -1,33 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import {type FormEvent} from 'react';
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
+    const handleSubmit = async (e:FormEvent) => {
+        e.preventDefault();
+        let file = document.querySelector('#data') as HTMLInputElement;
+        if (!file.files || file.files.length === 0) {
+            alert("Please select a file before submitting.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('data',file.files[0])
+        const response = await 
+        fetch("http://localhost:8000/api/read_file", {
+            method: "POST",
+            
+            body: formData,
+
+            }
+        );
+        if(response.ok){
+            const jsonData = await response.json();
+            //@ts-ignore
+            const table = new Tabulator('#table',{
+                data: jsonData,
+                nestedFieldSeparator: false,
+                autoColumns: true
+            }
+            )
+        }
+    }
+    return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <form onSubmit={handleSubmit}>
+        <input type="file"  accept='xlsx' name='data' id='data'/>
+        <input type="submit" value="Enviar" />
+    </form>
+    <div id="table" style={{width:'80vw', height: '80vh'}}></div>
+    
+
+
     </>
   )
 }
