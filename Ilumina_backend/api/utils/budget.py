@@ -1,14 +1,16 @@
 import pandas as pd
 import numpy as np
-import re, json
+import re
+import json
 from django.db import transaction
 from ..models import *
 
-def get_budget():
+
+def get_budget(ipc: float):
 
     qs = (AnnualBudget.objects
-        .select_related("cost_center_account__cost_center", "cost_center_account__account")
-        .all())
+          .select_related("cost_center_account__cost_center", "cost_center_account__account")
+          .all())
 
     # Convertimos a lista de dicts
     rows = []
@@ -25,13 +27,11 @@ def get_budget():
         })
 
     df = pd.DataFrame(rows)
-
     # Pivot de budget
     df_budget = df.pivot_table(
         index=["cc_code", "cc_name", "acc_code", "acc_name"],
         columns="year",
         values="budget",
-        aggfunc="sum",  # suma todos los presupuestos del año
         fill_value=0
     )
 
@@ -40,9 +40,7 @@ def get_budget():
 
     # Renombrar columnas → Presupuesto_20XX
     df_budget = df_budget.add_prefix("Presupuesto_").reset_index()
-
     last_year = df["year"].max()
-
     df_last = df[df["year"] == last_year][
         ["cc_code", "cc_name", "acc_code", "acc_name", "executed", "available"]
     ].rename(columns={
@@ -65,12 +63,12 @@ def get_budget():
 
     final_table = final_table[cols].rename(columns={
         "cc_code": "Centro de Costos",
-        "cc_name": "Nombre Centro de Costos", 
-        "acc_code": "Cuenta Contable", 
+        "cc_name": "Nombre Centro de Costos",
+        "acc_code": "Cuenta Contable",
         "acc_name": "Nombre Cuenta",
     })
+    final_table['Presupuesto Calculado'] = round(final_table[f'Presupuesto_{last_year}'] *(1+(ipc/100)),0)
 
     json_str = final_table.to_json(orient="records", force_ascii=False)
     data = json.loads(json_str)
     return data
-

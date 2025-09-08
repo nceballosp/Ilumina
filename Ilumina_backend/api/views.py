@@ -21,8 +21,10 @@ def read_file_test(request: HttpRequest):
     if df:
         return Response({"detail": f"Archivo '{file.name}' cargado correctamente ✅"})
 
+
 @api_view(['GET'])
 def show_file_test(request: HttpRequest):
-    df = get_budget()
+    ipc: float = float(request.GET.get('ipc'))
+    df = get_budget(ipc)
     if df:
         return Response(data=df, status=200)
