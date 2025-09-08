@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 
 
 class Account(models.Model):
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
 
     class Meta:
@@ -23,7 +23,7 @@ class Account(models.Model):
 
 
 class CostCenter(models.Model):
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
     accounts = models.ManyToManyField(
@@ -46,7 +46,12 @@ class CostCenterAccount(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = [("cost_center", "account")]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cost_center", "account"],
+                name="uniq_costcenter_account",
+            )
+        ]
         indexes = [
             models.Index(fields=["cost_center", "account"]),
             models.Index(fields=["account"]),

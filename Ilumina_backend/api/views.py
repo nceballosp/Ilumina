@@ -6,7 +6,8 @@ from rest_framework.decorators import api_view
 from .models import *
 from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
-from .utils import load_table
+from .utils.load import load_file
+from .utils.budget import get_budget
 
 
 # No protegido de csrf: arreglar
@@ -14,5 +15,14 @@ from .utils import load_table
 @api_view(['POST'])
 def read_file_test(request: HttpRequest):
     file = request.FILES.get('data')
-    df = load_table(file)
-    return Response(data=df, status=200)
+    if not file:
+        return Response({"detail": "No se recibió archivo"}, status=400)
+    df = load_file(file)
+    if df:
+        return Response({"detail": f"Archivo '{file.name}' cargado correctamente ✅"})
+
+@api_view(['GET'])
+def show_file_test(request: HttpRequest):
+    df = get_budget()
+    if df:
+        return Response(data=df, status=200)
