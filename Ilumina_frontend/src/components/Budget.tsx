@@ -6,53 +6,57 @@ interface BudgetProps {
 }
 
 export const Budget: React.FC<BudgetProps> = ({ title }) => {
-  const tabla = useRef<any>(null);
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    let ipcInput = document.querySelector('#ipc') as HTMLInputElement;
-    let ipc = ipcInput ? parseFloat(ipcInput.value) : NaN;
-    if (!ipc) {
-      alert('IPC no puede ser vacio');
-      return;
-    }
-    const response = await fetch(
-      `http://localhost:8000/api/show_file?ipc=${ipc}`,
-      {
-        method: 'GET',
-      }
-    );
-    if (response.ok) {
-      const jsonData = await response.json();
-      //@ts-expect-error no table
-      let table = new Tabulator('#table', {
-        data: jsonData,
-        nestedFieldSeparator: false,
-        autoColumns: true,
-      });
-      table.on('tableBuilt', () => {
-        // table.updateColumnDefinition('Presupuesto Calculado',{cellEdited: (cell:object)=>{
-        //     //fila
-        //     //@ts-expect-error
-        //     let fila = cell.getRow().getData();
-        // }})
-        const allCols = table.getColumns();
-        //@ts-expect-error for use
-        allCols.slice(4).forEach((col) => {
-          col.updateDefinition({
-            editor: 'number',
-            formatter: 'money',
-            formatterParams: {
-              thousand: '.',
-              decimal: ',',
-              precision: 0,
-            },
-          });
-        });
-        // Variable para debug en consola
-        //@ts-expect-error for use
-        window.table = table;
-        tabla.current = table;
-      });
+    // @ts-ignore
+    const tabla = useRef<any>(null);
+    const handleSubmit = async (e:FormEvent) => {
+        e.preventDefault();
+        let ipcInput = document.querySelector('#ipc') as HTMLInputElement;
+        let ipc = ipcInput ? parseFloat(ipcInput.value) : NaN;
+        if (!ipc){
+            alert('IPC no puede ser vacio');
+            return;
+        }
+        const response = await 
+        fetch(`http://localhost:8000/api/show_file?ipc=${ipc}`, {
+            method: "GET",
+            }
+        );
+        if(response.ok){
+            const jsonData = await response.json();
+            //@ts-expect-error no table
+            let table = new Tabulator('#table', {
+                data: jsonData,
+                nestedFieldSeparator: false,
+                autoColumns: true,
+                }
+            )
+            table.on('tableBuilt',()=>{
+                const allCols = table.getColumns();
+                    //@ts-expect-error
+                allCols.slice(4).forEach(col => {
+                    col.updateDefinition({
+                        editor:'number',
+                        formatter: "money",
+                            formatterParams: {
+                            thousand: ".",
+                            decimal: ",",
+                            precision: 0,
+                            },
+                        cellEdited:(cell:object)=>{
+                        //fila
+                        //@ts-expect-error
+                        let fila = cell.getRow().getData();
+                        console.log(fila);
+                        }
+                    });
+                });
+                // Variable para debug en consola
+                //@ts-ignore
+                window.table = table;
+                tabla.current = table
+                
+            })
+        }
     }
   };
   return (
