@@ -1,55 +1,52 @@
-import logo from '../assets/3.svg'
+import { useState } from 'react';
+import logo from '../assets/3.svg';
+import { ArrowLeftEndOnRectangleIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 
 export function NavBar() {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-  <nav className="bg-ilumina border-b border-gray-200 px-4 py-4">
-    <div className="max-w-7xl mx-auto flex items-center justify-between">
-      
-      {/* Logo */}
-      <div className="text-xl font-bold text-ilumina">
-        <a href="/">
-          <img className="w-10"src={logo} alt="" />
-        </a>
-      </div>
+    <nav className="bg-ilumina border-b border-gray-200 py-3">
+      <div className="max-w-full mx-auto flex items-center px-4 justify-between">
+        
+        <div className='flex w-1/2'>
+          <a href="/" className="w-10">
+            <img src={logo} alt="Logo" />
+          </a>
+        </div>
 
-      {/* Navegación - Escritorio */}
-      <div className="hidden md:flex space-x-6 text-white">
-        <a href="/" className="font-semibold hover:underline">Inicio</a>
-        <a href="/load" className="font-semibold hover:underline">Cargar</a>
-        <a href="/budget" className="font-semibold hover:underline">Generar Presupuesto</a>
-      </div>
+        <div className="hidden md:flex space-x-6 text-white">
+          <a href="/" className="font-semibold hover:underline">Inicio</a>
+          <a href="/load" className="font-semibold hover:underline">Cargar</a>
+          <a href="/budget" className="font-semibold hover:underline">Presupuesto</a>
+          <a href="/login">
+            <ArrowLeftEndOnRectangleIcon className="size-6 text-white" />
+          </a>  
+        </div>
 
-      {/* Botón */}
-      <div className="hidden md:block">
-        <a href="/register" className="bg-white text-ilumina font-semibold px-4 py-2 rounded hover:opacity-90">
-          Login
-        </a>
-      </div>
+        {isOpen && (
+          <div className="md:hidden flex text-white space-x-3">
+            <a href="/" className="font-semibold hover:underline">Inicio</a>
+            <a href="/load" className="font-semibold hover:underline">Cargar</a>
+            <a href="/budget" className="font-semibold hover:underline">Presupuesto</a>
+            <a href="/login" className="">
+              <ArrowLeftEndOnRectangleIcon className="size-6 text-white" />
+            </a>
+          </div>
+        )}
+        
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-white">
+            {isOpen ? (
+              <XMarkIcon className="size-6 hover:size-7" />
+            ) : (
+              <Bars3Icon className="size-6 hover:size-7" />
+            )}
+          </button>
+        </div>
+      </div>  
 
-      {/* Menú mobile */}
-      <div className="md:hidden">
-        <button className="text-gray-600 hover:text-ilumina focus:outline-none">
-          {/* Ícono hamburguesa (usa Heroicons o SVG) */}
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"
-              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+    </nav>
+  );
+}
 
-    {/* Menú desplegable mobile (puedes controlarlo con estado React si quieres funcionalidad) */}
-      <div className="md:hidden space-x-6 text-white">
-        <a href="/" className="font-semibold hover:underline">Inicio</a>
-        <a href="/load" className="font-semibold hover:underline">Cargar</a>
-        <a href="/budget" className="font-semibold hover:underline">Generar Presupuesto</a>
-        <a href="/register" className="bg-white text-ilumina font-semibold px-4 py-2 rounded hover:opacity-90">
-          Login
-        </a>
-      </div>
-  </nav>
-
-  )
-};
