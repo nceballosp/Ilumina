@@ -1,36 +1,40 @@
 import { useState } from 'react';
-import logo from '../assets/3.svg';
+import logo from '../assets/1.svg';
 import { ArrowLeftEndOnRectangleIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 
 export function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-ilumina border-b border-gray-200 py-3">
-      <div className="max-w-full mx-auto flex items-center px-4 justify-between">
+    <nav className="bg-ilumina bg-opacity-95 backdrop-blur-2xl py-3 font-poppins shadow-md z-10 relative">
+      <div className="max-w-full mx-auto flex items-center px-12 justify-between">
         
-        <div className='flex w-1/2'>
-          <a href="/" className="w-10">
+        <div className='flex'>
+          <a href="/" className="w-45">
             <img src={logo} alt="Logo" />
           </a>
         </div>
 
-        <div className="hidden md:flex space-x-6 text-white">
-          <a href="/" className="font-semibold hover:underline">Inicio</a>
-          <a href="/load" className="font-semibold hover:underline">Cargar</a>
-          <a href="/budget" className="font-semibold hover:underline">Presupuesto</a>
+        <div className="hidden md:flex space-x-10 text-white">
+          <a href="/" className="font-semibold hover:text-iluminac">Inicio</a>
+          <a href="/load" className="font-semibold hover:text-iluminac">Cargar</a>
+          <a href="/budget" className="font-semibold hover:text-iluminac">Presupuesto</a>
           <a href="/login">
-            <ArrowLeftEndOnRectangleIcon className="size-6 text-white" />
+            <i className='hover:text-iluminac'>
+              <ArrowLeftEndOnRectangleIcon className="size-6 hover:text-iluminac" />
+            </i>
           </a>  
         </div>
 
         {isOpen && (
           <div className="md:hidden flex text-white space-x-3">
-            <a href="/" className="font-semibold hover:underline">Inicio</a>
-            <a href="/load" className="font-semibold hover:underline">Cargar</a>
-            <a href="/budget" className="font-semibold hover:underline">Presupuesto</a>
+            <a href="/" className="font-semibold hover:text-iluminac">Inicio</a>
+            <a href="/load" className="font-semibold hover:text-iluminac">Cargar</a>
+            <a href="/budget" className="font-semibold hover:text-iluminac">Presupuesto</a>
             <a href="/login" className="">
-              <ArrowLeftEndOnRectangleIcon className="size-6 text-white" />
+              <i className='hover:text-iluminac'>
+                <ArrowLeftEndOnRectangleIcon className="size-6 hover:text-iluminac" />
+              </i>
             </a>
           </div>
         )}

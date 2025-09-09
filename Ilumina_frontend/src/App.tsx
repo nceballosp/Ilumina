@@ -7,7 +7,7 @@ import { NavBar } from './components/Nav';
 const App: React.FC = () => {
   return (
     <>
-      <div>
+      <div className="font-poppins">
         <NavBar></NavBar>
         <Routes>
           <Route path="" element={<Home title="" />} />

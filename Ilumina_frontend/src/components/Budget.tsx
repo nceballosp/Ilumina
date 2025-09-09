@@ -11,7 +11,7 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
         e.preventDefault();
         const ipcInput = document.querySelector('#ipc') as HTMLInputElement;
         const ipc = ipcInput ? parseFloat(ipcInput.value) : NaN;
-        if (!ipc){
+        if (!ipc && !tabla){
             alert('IPC no puede ser vacio');
             return;
         }
@@ -58,9 +58,9 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
         }
     }
     return (
-      <div className="flex-col pt-4 pb-4">    
-        <p>{title}</p>
-        <p className="text-4xl font-semibold text-ilumina text-center">PRESUPUESTACIÓN</p>
+      <div className="flex-col pt-4 pb-4 bg-iluminab max-w-full min-h-screen">    
+        <p className='hidden md:hidden'>{title}</p>
+        <p className="text-4xl font-semibold text-white text-center pt-10">PRESUPUESTACIÓN</p>
         <div className="flex justify-center">
           <form
             onSubmit={handleSubmit}
@@ -75,7 +75,7 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
               step="any"
             />
             <button
-              className="rounded-2xl bg-ilumina text-white font-semibold px-3 py-2 w-50 cursor-pointer"
+              className="rounded-2xl bg-iluminac text-white font-semibold px-3 py-2 w-50 cursor-pointer"
               type="submit"
             >
               Generar
@@ -86,7 +86,7 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
                   ? tabla.current.download('xlsx', 'Presupuesto.xlsx')
                   : alert('No hay tabla para exportar')
               }
-              className="rounded-2xl bg-ilumina text-white font-semibold px-3 py-2 w-50 cursor-pointer"
+              className="rounded-2xl bg-iluminac text-white font-semibold px-3 py-2 w-50 cursor-pointer"
             >
               Exportar
             </button>
