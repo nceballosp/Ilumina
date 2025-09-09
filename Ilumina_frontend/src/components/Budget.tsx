@@ -6,12 +6,11 @@ interface BudgetProps {
 }
 
 export const Budget: React.FC<BudgetProps> = ({ title }) => {
-    // @ts-ignore
     const tabla = useRef<any>(null);
     const handleSubmit = async (e:FormEvent) => {
         e.preventDefault();
-        let ipcInput = document.querySelector('#ipc') as HTMLInputElement;
-        let ipc = ipcInput ? parseFloat(ipcInput.value) : NaN;
+        const ipcInput = document.querySelector('#ipc') as HTMLInputElement;
+        const ipc = ipcInput ? parseFloat(ipcInput.value) : NaN;
         if (!ipc){
             alert('IPC no puede ser vacio');
             return;
@@ -24,7 +23,7 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
         if(response.ok){
             const jsonData = await response.json();
             //@ts-expect-error no table
-            let table = new Tabulator('#table', {
+            const table = new Tabulator('#table', {
                 data: jsonData,
                 nestedFieldSeparator: false,
                 autoColumns: true,
@@ -32,7 +31,7 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
             )
             table.on('tableBuilt',()=>{
                 const allCols = table.getColumns();
-                    //@ts-expect-error
+                    //@ts-expect-error cols
                 allCols.slice(4).forEach(col => {
                     col.updateDefinition({
                         editor:'number',
@@ -44,59 +43,58 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
                             },
                         cellEdited:(cell:object)=>{
                         //fila
-                        //@ts-expect-error
-                        let fila = cell.getRow().getData();
+                        //@ts-expect-error no fila
+                        const fila = cell.getRow().getData();
                         console.log(fila);
                         }
                     });
                 });
                 // Variable para debug en consola
-                //@ts-ignore
+                //@ts-expect-error debug
                 window.table = table;
                 tabla.current = table
                 
             })
         }
     }
+    return (
+      <div className="flex-col pt-4 pb-4">    
+        <p>{title}</p>
+        <p className="text-4xl font-semibold text-ilumina text-center">PRESUPUESTACIÓN</p>
+        <div className="flex justify-center">
+          <form
+            onSubmit={handleSubmit}
+            className="flex text-2xl pt-4 pb-4 justify-center items-center gap-6 min-w-full"
+          >
+            <input
+              className='rounded-2xl text-black font-semibold border-ilumina px-3 py-2 w-50'
+              type="number"
+              name="ipc"
+              id="ipc"
+              placeholder="Ingrese IPC"
+              step="any"
+            />
+            <button
+              className="rounded-2xl bg-ilumina text-white font-semibold px-3 py-2 w-50 cursor-pointer"
+              type="submit"
+            >
+              Generar
+            </button>
+            <button
+              onClick={() =>
+                tabla.current
+                  ? tabla.current.download('xlsx', 'Presupuesto.xlsx')
+                  : alert('No hay tabla para exportar')
+              }
+              className="rounded-2xl bg-ilumina text-white font-semibold px-3 py-2 w-50 cursor-pointer"
+            >
+              Exportar
+            </button>
+          </form>
+        </div>
+        <div className="flex justify-center">
+          <div className="w-8xl h-120 mx-4" id="table" />
+        </div>
+      </div>
+    );
   };
-  return (
-    <div className="flex-col pt-4 pb-4">    
-      <p>{title}</p>
-      <p className="text-4xl font-semibold text-ilumina text-center">PRESUPUESTACIÓN</p>
-      <div className="flex justify-center">
-        <form
-          onSubmit={handleSubmit}
-          className="flex text-2xl pt-4 pb-4 justify-center items-center gap-6 min-w-full"
-        >
-          <input
-            className='rounded-2xl text-black font-semibold border-ilumina px-3 py-2 w-50   '
-            type="number"
-            name="ipc"
-            id="ipc"
-            placeholder="Ingrese IPC"
-            step="any"
-          />
-          <button
-            className="rounded-2xl bg-ilumina text-white font-semibold px-3 py-2 w-50 cursor-pointer"
-            type="submit"
-          >
-            Generar
-          </button>
-          <button
-            onClick={() =>
-              tabla.current
-                ? tabla.current.download('xlsx', 'Presupuesto.xlsx')
-                : alert('No hay tabla para exportar')
-            }
-            className="rounded-2xl bg-ilumina text-white font-semibold px-3 py-2 w-50 cursor-pointer"
-          >
-            Exportar
-          </button>
-        </form>
-      </div>
-      <div className="flex justify-center">
-        <div className="w-8xl h-120 mx-4" id="table" />
-      </div>
-    </div>
-  );
-};
