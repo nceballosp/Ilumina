@@ -31,24 +31,25 @@ export const Budget: React.FC<BudgetProps> = ({ title }) => {
                 }
             )
             table.on('tableBuilt',()=>{
-                // table.updateColumnDefinition('Presupuesto Calculado',{cellEdited: (cell:object)=>{
-                //     //fila
-                //     //@ts-expect-error
-                //     let fila = cell.getRow().getData();
-                // }})
                 const allCols = table.getColumns();
                     //@ts-expect-error
-                    allCols.slice(4).forEach(col => {
+                allCols.slice(4).forEach(col => {
                     col.updateDefinition({
                         editor:'number',
                         formatter: "money",
-                        formatterParams: {
-                        thousand: ".",
-                        decimal: ",",
-                        precision: 0,
+                            formatterParams: {
+                            thousand: ".",
+                            decimal: ",",
+                            precision: 0,
+                            },
+                        cellEdited:(cell:object)=>{
+                        //fila
+                        //@ts-expect-error
+                        let fila = cell.getRow().getData();
+                        console.log(fila);
                         }
                     });
-                    });
+                });
                 // Variable para debug en consola
                 //@ts-ignore
                 window.table = table;

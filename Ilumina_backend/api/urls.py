@@ -6,6 +6,6 @@ router = DefaultRouter()
 
 urlpatterns = router.urls
 urlpatterns += [
-    path('read_file', read_file_test, name='prueba'),
-    path('show_file', show_file_test, name='prueba2'),
+    path('read_file', ReadFileView.as_view(), name='prueba'),
+    path('show_file', ShowTableView.as_view(), name='prueba2'),
 ]
