@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CostCenter',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('code', models.CharField(max_length=20)),
                 ('name', models.CharField(max_length=200)),
                 ('is_active', models.BooleanField(default=True)),
@@ -29,23 +30,30 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Account',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('code', models.CharField(max_length=20)),
                 ('name', models.CharField(max_length=200)),
             ],
             options={
                 'ordering': ['code'],
-                'indexes': [models.Index(fields=['code'], name='api_account_code_185d04_idx')],
+                'indexes': [models.Index(fields=['code'],
+                            name='api_account_code_185d04_idx')],
             },
         ),
         migrations.CreateModel(
             name='CostCenterAccount',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('account', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='api.account')),
-                ('cost_center', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.costcenter')),
+                ('account', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='api.account')),
+                ('cost_center', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='api.costcenter')),
             ],
             options={
                 'ordering': ['cost_center__code', 'account__code'],
@@ -54,43 +62,65 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='costcenter',
             name='accounts',
-            field=models.ManyToManyField(blank=True, related_name='cost_centers', through='api.CostCenterAccount', to='api.account'),
+            field=models.ManyToManyField(
+                blank=True, related_name='cost_centers',
+                through='api.CostCenterAccount',
+                to='api.account'),
         ),
         migrations.CreateModel(
             name='AnnualBudget',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('year', models.PositiveIntegerField()),
-                ('budget_amount', models.DecimalField(decimal_places=2, default=0, max_digits=16)),
-                ('executed_amount', models.DecimalField(decimal_places=2, default=0, max_digits=16)),
-                ('available_amount', models.DecimalField(decimal_places=2, default=0, max_digits=16)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('cost_center_account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='annual_budgets', to='api.costcenteraccount')),
+                ('budget_amount', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=16)),
+                ('executed_amount', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=16)),
+                ('available_amount', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=16)),
+                ('created_at', models.DateTimeField(
+                    auto_now_add=True)),
+                ('updated_at', models.DateTimeField(
+                    auto_now=True)),
+                ('cost_center_account', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='annual_budgets',
+                    to='api.costcenteraccount')),
             ],
             options={
-                'ordering': ['-year', 'cost_center_account__cost_center__code', 'cost_center_account__account__code'],
+                'ordering': ['-year',
+                             'cost_center_account__cost_center__code',
+                             'cost_center_account__account__code'],
             },
         ),
         migrations.AddIndex(
             model_name='costcenteraccount',
-            index=models.Index(fields=['cost_center', 'account'], name='api_costcen_cost_ce_b450e4_idx'),
+            index=models.Index(
+                fields=['cost_center', 'account'],
+                name='api_costcen_cost_ce_b450e4_idx'),
         ),
         migrations.AddIndex(
             model_name='costcenteraccount',
-            index=models.Index(fields=['account'], name='api_costcen_account_dfd9de_idx'),
+            index=models.Index(fields=['account'],
+                               name='api_costcen_account_dfd9de_idx'),
         ),
         migrations.AddConstraint(
             model_name='costcenteraccount',
-            constraint=models.UniqueConstraint(fields=('cost_center', 'account'), name='uniq_costcenter_account'),
+            constraint=models.UniqueConstraint(
+                fields=('cost_center', 'account'),
+                name='uniq_costcenter_account'),
         ),
         migrations.AddIndex(
             model_name='annualbudget',
-            index=models.Index(fields=['year'], name='api_annualb_year_997fc8_idx'),
+            index=models.Index(
+                fields=['year'], name='api_annualb_year_997fc8_idx'),
         ),
         migrations.AddIndex(
             model_name='annualbudget',
-            index=models.Index(fields=['cost_center_account', 'year'], name='api_annualb_cost_ce_69b72c_idx'),
+            index=models.Index(
+                fields=['cost_center_account', 'year'],
+                name='api_annualb_cost_ce_69b72c_idx'),
         ),
         migrations.AlterUniqueTogether(
             name='annualbudget',

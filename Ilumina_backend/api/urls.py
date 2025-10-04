@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import ReadFileView, ShowTableView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()

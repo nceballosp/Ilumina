@@ -1,33 +1,8 @@
-# import pandas as pd
-# from django.core.files.uploadedfile import InMemoryUploadedFile
-# from .models import CostCenter, CostCenterAccount, Account, AnnualBudget
-
-
-# # def load_table(file):
-# #     table = pd.read_excel(file, sheet_name='Presupuesto completo').fillna(0)
-# #     i = 1
-# #     for index, row in table.iterrows():
-# #         account_row, created = Account.objects.get_or_create(
-# #             name=row['Nombre cuenta'], code=str(row['Cuenta contable']))
-# #         cost_center_row, created = CostCenter.objects.get_or_create(
-# #             name=row['Nombre Centro de costo'], code=str(row['Centro de costo']))
-# #         print(cost_center_row)
-# #         print(account_row)
-# #         print(i)
-# #         i+=1
-# #     # temporalmente retorna el dataframe completo
-# #     # TO DO: Cambiar retorno a query o True si cargo todos los objetos a la db correctamente
-# #     return table.to_dict(orient='records')
-
-
-# # if __name__ == '__main__':
-# #     load_table('2026.xlsx')
-
 import pandas as pd
 import numpy as np
-import re, json
-from django.db import transaction
-from ..models import *
+import re
+from ..models import CostCenter, Account, CostCenterAccount, AnnualBudget
+
 
 def _norm_text(val: str) -> str:
     if val is None:
@@ -36,6 +11,7 @@ def _norm_text(val: str) -> str:
     # Colapsa espacios múltiples
     s = re.sub(r"\s+", " ", s)
     return s
+
 
 def _norm_code(val) -> str:
     """
@@ -50,7 +26,8 @@ def _norm_code(val) -> str:
     # Si viene como float entero ("5195200001.0"), quita ".0"
     if re.fullmatch(r"\d+\.0", s):
         s = s[:-2]
-    # Si es float con decimales raros, intenta formatear como entero cuando aplique
+    # Si es float con decimales raros, intenta formatear como entero cuando
+    # aplique
     try:
         f = float(s)
         if f.is_integer():
@@ -59,13 +36,14 @@ def _norm_code(val) -> str:
         pass
     return s
 
+
 def load_file(file):
 
     xls = pd.ExcelFile(file)
     sheet_names = xls.sheet_names
     table = pd.read_excel(
         file,
-        sheet_name= sheet_names[0], #!!! Normalizar segun como venga de SIPRES
+        sheet_name=sheet_names[0],  # !!! Normalizar segun como venga de SIPRES
         dtype=str,
         keep_default_na=False,
     )
@@ -106,19 +84,24 @@ def load_file(file):
         if not cc_code or not acc_code:
             continue
 
-        cc, created = CostCenter.objects.get_or_create(code=cc_code, name=cc_name)
+        cc, created = CostCenter.objects.get_or_create(
+            code=cc_code, name=cc_name)
         if created:
             created_cc += 1
 
-        acc, created = Account.objects.get_or_create(code=acc_code, name=acc_name)
+        acc, created = Account.objects.get_or_create(
+            code=acc_code, name=acc_name)
         if created:
             created_acc += 1
 
-        ccac, created = CostCenterAccount.objects.get_or_create(cost_center=cc, account=acc)
+        ccac, created = CostCenterAccount.objects.get_or_create(
+            cost_center=cc, account=acc)
         if created:
             created_ccac += 1
 
-        __, created = AnnualBudget.objects.get_or_create(cost_center_account=ccac, year=YEAR, budget_amount=ba_amount, executed_amount=ea_amount, available_amount=aa_amount)
+        __, created = AnnualBudget.objects.get_or_create(
+            cost_center_account=ccac, year=YEAR, budget_amount=ba_amount,
+            executed_amount=ea_amount, available_amount=aa_amount)
 
         processed += 1
 
@@ -128,6 +111,3 @@ def load_file(file):
     print(f"CostCenterAccounts creadas: {created_ccac}")
 
     return True
-
-
-
