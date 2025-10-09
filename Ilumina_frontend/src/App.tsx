@@ -3,7 +3,6 @@ import { Home } from './components/Home';
 import { Load } from './components/Load';
 import { Budget } from './components/Budget';
 import { NavBar } from './components/Nav';
-
 const App: React.FC = () => {
   return (
     <>

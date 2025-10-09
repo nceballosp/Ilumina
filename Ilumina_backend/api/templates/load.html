@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex justify-center bg-iluminab max-w-full min-h-screen">
+  <div>
+    <form id="uploadForm" class="flex space-x-4 text-2xl pt-10" enctype="multipart/form-data">
+      <label class="flex justify-center items-center border rounded-2xl p-3 font-medium text-white cursor-pointer" for="data">
+        📄
+        <p class="px-2" id="fileName">Cargar Archivo</p>
+      </label>
+      <input class="hidden" id="data" name="data" type="file" />
+      <button type="submit" class="px-4 py-2 text-white font-semibold bg-iluminac rounded-2xl cursor-pointer">
+        Enviar
+      </button>
+    </form>
+
+    <div id="message" class="mt-4 p-2 rounded bg-white text-green-700 hidden"></div>
+  </div>
+</div>
+
+<script>
+    const csrftoken = Cookies.get('csrftoken');
+document.getElementById('data').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  document.getElementById('fileName').innerText = file ? file.name : 'Cargar Archivo';
+});
+
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fileInput = document.getElementById('data');
+  if (!fileInput.files.length) {
+    alert('Por favor selecciona un archivo antes de enviar.');
+    return;
+  }
+  const formData = new FormData();
+  formData.append('data', fileInput.files[0]);
+  console.log(fileInput.files[0])
+
+  const messageBox = document.getElementById('message');
+  messageBox.classList.remove('hidden');
+  messageBox.textContent = 'Cargando archivo...';
+
+  try {
+    const response = await fetch("{% url 'load' %}", { 
+        method: 'POST',
+        headers: {
+            "X-CSRFToken": csrftoken, 
+        }, 
+        body: formData, 
+        });
+    const json = await response.json();
+    messageBox.textContent = json.detail || 'Archivo cargado correctamente ✅';
+  } catch (err) {
+    messageBox.textContent = 'Error de red o servidor no disponible';
+  }
+});
+</script>
+{% endblock %}

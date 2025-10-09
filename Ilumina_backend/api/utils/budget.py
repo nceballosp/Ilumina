@@ -71,6 +71,6 @@ def get_budget(ipc: float):
     final_table['Promedio 4 años'] = final_table[last_4].sum(axis=1)/4
     final_table['Presupuesto Calculado'] = round(final_table[f'Presupuesto_{last_year}'] *(1+(ipc/100)),0)
 
-    json_str = final_table.to_json(orient="records", force_ascii=False)
+    json_str = final_table.fillna(0).to_json(orient="records", force_ascii=False)
     data = json.loads(json_str)
     return data
