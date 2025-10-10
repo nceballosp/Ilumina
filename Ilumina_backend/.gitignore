@@ -43,8 +43,6 @@ coverage.xml
 # **/migrations/ si deseas ignorarlas completamente (no recomendado para trabajo en equipo)
 
 # Archivos de Django generados
-staticfiles/
-static/
 media/documents/*
 
 *.pot

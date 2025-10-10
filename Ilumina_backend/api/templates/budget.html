@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Presupuesto{% endblock %}
 {% block content %}
-<div class="flex-col pt-4 pb-4 bg-iluminab max-w-full min-h-screen">    
-        <p class="text-4xl font-semibold text-white text-center pt-10">PRESUPUESTACIÓN</p>
+<div class="flex-col pt-4 pb-4 bg-body max-w-full min-h-screen">    
+        <p class="text-4xl font-semibold text-ilumina text-center pt-10 pb-6">PRESUPUESTO</p>
         <div class="flex justify-center">
           <form class="flex text-2xl pt-4 pb-4 justify-center items-center gap-6 min-w-full" id="budgetForm">
             <input
-              class='rounded-2xl text-black font-semibold bg-white border-ilumina px-3 py-2 w-50'
+              class='rounded-lg text-ilumina font-semibold border-ilumina p-3 w-50 border-2 placeholder-ilumina'
               type="number"
               name="ipc"
               id="ipc"
@@ -14,13 +14,13 @@
               step="any"
             />
             <button
-              class="rounded-2xl bg-iluminac text-white font-semibold px-3 py-2 w-50 cursor-pointer"
+              class="rounded-lg bg-iluminab border-ilumina border-2 text-white font-semibold p-3 w-50 cursor-pointer"
               type="submit"
             >
               Generar
             </button>
             <!-- Agregar funcionalidad -->
-            <button class="rounded-2xl bg-iluminac text-white font-semibold px-3 py-2 w-50 cursor-pointer">
+            <button class="rounded-lg bg-iluminab border-ilumina border-2 text-white font-semibold p-3 w-50 cursor-pointer">
               Exportar
             </button>
           </form>
