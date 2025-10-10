@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Presupuesto{% endblock %}
+{% block content %}
+<div class="flex-col pt-4 pb-4 bg-iluminab max-w-full min-h-screen">    
+  <p class="text-4xl font-semibold text-white text-center pt-10">AJUSTE PRESUPUESTACIÓN</p>
+  <div class="flex justify-center">
+    <div class="w-8xl h-120 mx-4" id="table"></div>
+  </div>
+</div>
+{{ data|json_script:"data-json" }}
+<script>
+    const tabla = document.querySelector('#table');
+    const form = document.querySelector('#budgetForm');
+    const csrftoken = Cookies.get('csrftoken');
+    const data = JSON.parse(document.getElementById('data-json').textContent);
+    tabla = new Tabulator('#table', {
+      data: data,
+      nestedFieldSeparator: false,
+      height:'80vh',
+      autoColumns: true,
+    });
+
+    tabla.on('tableBuilt', () => {
+      const allCols = tabla.getColumns();
+      allCols.slice(4).forEach(col => {
+        col.updateDefinition({
+          editor: 'number',
+          formatter: "money",
+          formatterParams: {
+            thousand: ".",
+            decimal: ",",
+            precision: 0,
+          },
+          cellEdited: (cell) => {
+            const fila = cell.getRow().getData();
+            console.log(fila);
+          }
+        });
+      });
+    });
+
+
+document.getElementById('exportButton').addEventListener('click', () => {
+  if (tabla) tabla.download('xlsx', 'Presupuesto.xlsx');
+  else alert('No hay tabla para exportar');
+});
+
+        
+
+</script>
+{% endblock %}
