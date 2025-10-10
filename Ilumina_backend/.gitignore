@@ -42,10 +42,7 @@ coverage.xml
 **/migrations/__pycache__/
 # **/migrations/ si deseas ignorarlas completamente (no recomendado para trabajo en equipo)
 
-# Archivos de Django generados
-media/documents/*
 
-*.pot
 
 # Archivos de Docker (si usas)
 *.pid

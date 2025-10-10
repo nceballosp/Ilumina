@@ -6,5 +6,5 @@ urlpatterns = [
     path('load_file', LoadFileView.as_view(), name='load'),
     path('login', HomeView.as_view(), name='login'),
     path('generate_budget', BudgetTableView.as_view(), name='budget'),
-    path('budget', LastBudgetTableView.as_view(), name='last_budget'),
+    path('current_budget', LastBudgetTableView.as_view(), name='last_budget'),
 ]
