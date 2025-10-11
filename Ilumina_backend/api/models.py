@@ -27,7 +27,9 @@ class CostCenter(models.Model):
     name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
     accounts = models.ManyToManyField(
-        Account, through="CostCenterAccount", related_name="cost_centers", blank=True)
+        Account, through="CostCenterAccount",
+        related_name="cost_centers",
+        blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -63,9 +65,9 @@ class CostCenterAccount(models.Model):
 
 
 class AnnualBudget(models.Model):
-
     cost_center_account = models.ForeignKey(
-        CostCenterAccount, on_delete=models.CASCADE, related_name="annual_budgets")
+        CostCenterAccount, on_delete=models.CASCADE,
+        related_name="annual_budgets")
     year = models.PositiveIntegerField()
     budget_amount = models.DecimalField(
         max_digits=16, decimal_places=2, default=0)

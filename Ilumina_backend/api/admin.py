@@ -1,13 +1,16 @@
 from django.contrib import admin
-from .models import *
+from .models import AnnualBudget, CostCenterAccount, CostCenter, Account
 
 admin.site.register(AnnualBudget)
+
 
 class AnnualBudgetInline(admin.TabularInline):
     model = AnnualBudget
     extra = 1
-    fields = ("year", "budget_amount", "executed_amount", "available_amount", "notes")
+    fields = ("year", "budget_amount", "executed_amount",
+              "available_amount", "notes")
     ordering = ("-year",)
+
 
 class CostCenterAccountInline(admin.TabularInline):
     model = CostCenterAccount
@@ -32,8 +35,6 @@ class AccountAdmin(admin.ModelAdmin):
 @admin.register(CostCenterAccount)
 class CostCenterAccountAdmin(admin.ModelAdmin):
     list_display = ("cost_center", "account")
-    search_fields = ("cost_center__code", "cost_center__name", "account__code", "account__name")
+    search_fields = ("cost_center__code", "cost_center__name",
+                     "account__code", "account__name")
     list_select_related = ("cost_center", "account")
-
-
-

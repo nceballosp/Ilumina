@@ -1,15 +1,14 @@
 import pandas as pd
-import numpy as np
-import re
 import json
-from django.db import transaction
-from ..models import *
+from ..models import AnnualBudget
 
 
 def get_budget(ipc: float):
 
     qs = (AnnualBudget.objects
-          .select_related("cost_center_account__cost_center", "cost_center_account__account")
+          .select_related(
+              "cost_center_account__cost_center",
+              "cost_center_account__account")
           .all())
 
     # Convertimos a lista de dicts
@@ -68,8 +67,9 @@ def get_budget(ipc: float):
         "acc_name": "Nombre Cuenta",
     })
     last_4 = [f'Presupuesto_{year}' for year in last_4]
-    final_table['Promedio 4 años'] = final_table[last_4].sum(axis=1)/4
-    final_table['Presupuesto Calculado'] = round(final_table[f'Presupuesto_{last_year}'] *(1+(ipc/100)),0)
+    final_table['Promedio 4 años'] = final_table[last_4].sum(axis=1) / 4
+    final_table['Presupuesto Calculado'] = round(
+        final_table[f'Presupuesto_{last_year}'] * (1 + (ipc / 100)), 0)
 
     json_str = final_table.fillna(0).to_json(orient="records", force_ascii=False)
     data = json.loads(json_str)

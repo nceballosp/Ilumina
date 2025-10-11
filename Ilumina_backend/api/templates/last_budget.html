@@ -4,7 +4,7 @@
 <div class="flex-col pt-4 pb-4 bg-body max-w-full min-h-screen">    
   <p class="text-4xl font-semibold text-ilumina text-center pt-10 pb-10">AJUSTE PRESUPUESTACIÓN</p>
     <!-- Barra de Filtro -->
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center" id="table-div">
     <div class="flex space-x-2 mb-2">
       <select id="filter-field" class="border p-2 bg-white rounded"></select>
       <select id="filter-type" class="border p-2 bg-white rounded">
@@ -53,6 +53,7 @@
         });
       });
     });
+// Logica Barra de Filtro
 tabla.on("tableBuilt", function () {
   const fieldSelect = document.getElementById("filter-field");
   tabla.getColumns().forEach(col => {
@@ -62,7 +63,6 @@ tabla.on("tableBuilt", function () {
     fieldSelect.appendChild(opt);
   });
 });
-// Logica Barra de Filtro
 function updateFilter() {
   const field = document.getElementById("filter-field").value;
   const type = document.getElementById("filter-type").value;
@@ -80,8 +80,8 @@ document.getElementById("filter-value").addEventListener("change", updateFilter)
 document.getElementById("filter-clear").addEventListener("click", () => {
   document.getElementById("filter-value").value = "";
   tabla.clearFilter();
-// Fin logica barra de filtro
 });
+// Fin logica barra de filtro
 
         
 
