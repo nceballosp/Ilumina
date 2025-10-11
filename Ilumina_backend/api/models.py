@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 
 class Account(models.Model):
@@ -23,6 +24,7 @@ class Account(models.Model):
 
 
 class CostCenter(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     code = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
