@@ -2,11 +2,11 @@
 {% block title %}Presupuesto{% endblock %}
 {% block content %}
 <div class="flex-col pt-4 pb-4 bg-body max-w-full min-h-screen">    
-        <p class="text-4xl font-semibold text-ilumina text-center pt-10 pb-6">PRESUPUESTO</p>
+        <p class="text-3xl font-semibold text-ilumina text-center pt-8 pb-6">PRESUPUESTO</p>
         <div class="flex justify-center">
           <form class="flex text-2xl pt-4 pb-4 justify-center items-center gap-6 min-w-full" id="budgetForm">
             <input
-              class='rounded-lg text-ilumina font-semibold border-ilumina p-3 w-50 border-2 placeholder-ilumina'
+              class='rounded-lg text-ilumina border-ilumina text-xl font-semibold p-2.5 w-35 cursor-pointer border-2 placeholder-ilumina'
               type="number"
               name="ipc"
               id="ipc"
@@ -14,23 +14,24 @@
               step="any"
             />
             <button
-              class="rounded-lg bg-iluminab border-ilumina border-2 text-white font-semibold p-3 w-50 cursor-pointer"
+              class="rounded-lg bg-iluminab border-ilumina border-2 text-white text-xl font-semibold p-2.5 w-35 cursor-pointer"
               type="submit"
             >
               Generar
             </button>
             <!-- Agregar funcionalidad -->
-            <button type="button" class="rounded-lg bg-iluminab border-ilumina border-2 text-white font-semibold p-3 w-50 cursor-pointer" id="exportButton">
+            <button type="button" class="rounded-lg bg-iluminab border-ilumina border-2 text-white text-xl font-semibold p-2.5 w-35 cursor-pointer id="exportButton">
               Exportar
             </button>
           </form>
         </div>
     <!-- Barra de Filtro -->
-  <div class="flex flex-col items-center justify-center" id="table-div">
-    <div class="flex space-x-2 mb-2">
-      <select id="filter-field" class="border p-2 bg-white rounded"></select>
-      <select id="filter-type" class="border p-2 bg-white rounded">
-        <option value="like">Contiene</option>
+  <div class="flex flex-col items-center justify-center mt-6" id="table-div">
+    <div class="flex space-x-3 items-center mb-7">
+      <p class="text-ilumina text-lg">Aplicar Filtro</p>
+      <select id="filter-field" class="border p-2  bg-white rounded-md"></select>
+      <select id="filter-type" class="border p-2 bg-white rounded-md">
+        <option class="border-ilumina border-1" value="like">Contiene</option>
         <option value="=">Igual</option>
         <option value="!=">Diferente</option>
         <option value="<">Menor que</option>
@@ -38,8 +39,8 @@
         <option value=">">Mayor que</option>
         <option value=">=">Mayor o igual</option>
       </select>
-      <input id="filter-value" type="text" placeholder="Valor..." class="border p-2 rounded bg-white">
-      <button id="filter-clear" class="border px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">Limpiar</button>
+      <input id="filter-value" type="text" placeholder="Valor..." class="border p-2 rounded-md bg-white">
+      <button id="filter-clear" class="border px-3 py-2 rounded-md bg-iluminad cursor-pointer">Limpiar</button>
     </div>
     <div class="w-11/12 h-120 mx-4" id="table"></div>
   </div>
