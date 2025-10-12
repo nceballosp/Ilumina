@@ -10,7 +10,7 @@
           📄
           <p class="px-2" id="fileName">Cargar Archivo</p>
         </label>
-        <input class="hidden" id="data" name="data" type="file" />
+        <input class="hidden" id="data" name="data" type="file" accept=".xlsx"/>
         <button type="submit" class="px-4 py-2 text-white font-semibold bg-iluminab rounded-lg cursor-pointer">
           Enviar
         </button>
@@ -23,7 +23,6 @@
 
 <script>
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-console.log(csrftoken)
 document.getElementById('data').addEventListener('change', (e) => {
   const file = e.target.files[0];
   document.getElementById('fileName').innerText = file ? file.name : 'Cargar Archivo';

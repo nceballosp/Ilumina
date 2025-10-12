@@ -20,7 +20,7 @@
               Generar
             </button>
             <!-- Agregar funcionalidad -->
-            <button class="rounded-lg bg-iluminab border-ilumina border-2 text-white font-semibold p-3 w-50 cursor-pointer">
+            <button type="button" class="rounded-lg bg-iluminab border-ilumina border-2 text-white font-semibold p-3 w-50 cursor-pointer" id="exportButton">
               Exportar
             </button>
           </form>
@@ -76,10 +76,10 @@
     tabla.on('tableBuilt', () => {
       const allCols = tabla.getColumns();
       const fieldSelect = document.getElementById("filter-field");
+      fieldSelect.innerHTML = ''
       allCols.forEach(col => {
       const opt = document.createElement("option");
       opt.value = col.getField();
-      console.log(`Se creo la opcion para${opt.value}`)
       opt.textContent = col.getDefinition().title || col.getField();
       fieldSelect.appendChild(opt);
       });
@@ -123,10 +123,10 @@ document.getElementById("filter-clear").addEventListener("click", () => {
 });
 
 
-// document.getElementById('exportButton').addEventListener('click', () => {
-//   if (tabla) tabla.download('xlsx', 'Presupuesto.xlsx');
-//   else alert('No hay tabla para exportar');
-// });
+document.getElementById('exportButton').addEventListener('click', () => {
+  if (tabla) tabla.download('xlsx', 'Presupuesto.xlsx');
+  else alert('No hay tabla para exportar');
+});
 
         
 

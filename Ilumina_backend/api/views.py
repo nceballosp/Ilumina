@@ -20,25 +20,27 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
 
-class LoadFileView(TemplateView):
+class LoadFileView(LoginRequiredMixin,TemplateView):
     template_name = 'load.html'
 
     def post(self, request: HttpRequest):
-        print(request.POST)
         file = request.FILES.get('data')
+        if str(file).split('.')[1] != 'xlsx':
+            return JsonResponse({"detail": "El archivo tiene que ser un xlsx"}, status=400)
         if not file:
             return JsonResponse({"detail": "No se recibió archivo"}, status=400)
         df = load_file(file)
         if df:
             return JsonResponse({"detail": f"Archivo '{file.name}' cargado correctamente ✅"})
-
+        elif not df:
+            return JsonResponse({"detail": f"Algo salio mal cargando los datos, revisar formato del archivo"})
 
 class UpdateRowView(View):
     def put(self):
         pass
 
 
-class LastBudgetTableView(ListView):
+class LastBudgetTableView(LoginRequiredMixin,ListView):
     template_name = 'last_budget.html'
     context_object_name = 'data'
 
@@ -47,7 +49,7 @@ class LastBudgetTableView(ListView):
         return list(queryset)
 
 
-class BudgetTableView(TemplateView):
+class BudgetTableView(LoginRequiredMixin,TemplateView):
     template_name = 'budget.html'
 
     def post(self, request: HttpRequest):
