@@ -27,7 +27,7 @@
           {% if user.is_authenticated %}
           <a href="{% url 'load' %}" class="font-semibold hover:text-iluminac">Cargar</a>
           <a href="{% url 'budget' %}" class="font-semibold hover:text-iluminac">Presupuesto</a>
-          <a href="{% url 'last_budget' %}" class="font-semibold hover:text-iluminac">Ajuste</a>
+          <a href="{% url 'adjust_budget' %}" class="font-semibold hover:text-iluminac">Ajuste</a>
             <form method="post" action="{% url 'logout' %}">
               {% csrf_token %}
               <button type="submit" class="font-semibold text-red-600 hover:text-red-800">

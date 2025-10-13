@@ -11,6 +11,7 @@
           <p class="px-2" id="fileName">Cargar Archivo</p>
         </label>
         <input class="hidden" id="data" name="data" type="file" accept=".xlsx"/>
+        <input id="year" class="flex justify-center items-center border-2 rounded-lg p-2.5 text-xl font-medium text-ilumina w-30" type="text" placeholder="Año">
         <button type="submit" class="px-2.5 w-30 text-white text-xl font-medium bg-iluminab rounded-lg cursor-pointer">
           Enviar
         </button>
@@ -31,12 +32,18 @@ document.getElementById('data').addEventListener('change', (e) => {
 document.getElementById('uploadForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const fileInput = document.getElementById('data');
+  const yearInput = document.getElementById('year')
   if (!fileInput.files.length) {
-    alert('Por favor selecciona un archivo antes de enviar.');
+    alert('Por favor selecciona un archivo para cargar');
+    return;
+  }
+  if (!yearInput.value) {
+    alert('Por favor ingrese el año correspondiente al archivo')
     return;
   }
   const formData = new FormData();
   formData.append('data', fileInput.files[0]);
+  formData.append('year', yearInput.value);
 
   const messageBox = document.getElementById('message');
   messageBox.classList.remove('hidden');

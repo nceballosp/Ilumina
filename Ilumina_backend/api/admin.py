@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AnnualBudget, CostCenterAccount, CostCenter, Account
+from .models import AnnualBudget, CostCenterAccount, CostCenter, Account, AdjustmentModel
 
 admin.site.register(AnnualBudget)
 
@@ -38,3 +38,40 @@ class CostCenterAccountAdmin(admin.ModelAdmin):
     search_fields = ("cost_center__code", "cost_center__name",
                      "account__code", "account__name")
     list_select_related = ("cost_center", "account")
+
+@admin.register(AdjustmentModel)
+class AdjustmentModelAdmin(admin.ModelAdmin):
+    # Campos que se mostrarán en la lista del admin
+    list_display = (
+        "cc_code",
+        "cc_name",
+        "acc_code",
+        "acc_name",
+        "calculated_amount",
+        "adjustment",
+        "final_amount",
+        "updated_at",
+    )
+
+    # Campos que serán buscables desde la barra superior
+    search_fields = (
+        "cc_code",
+        "cc_name",
+        "acc_code",
+        "acc_name",
+    )
+
+    # Filtros laterales (opcional, pero útil)
+    list_filter = (
+        "cc_name",
+        "acc_name",
+    )
+
+    # Orden por defecto
+    ordering = ("cc_code", "acc_code")
+
+    # Campos de solo lectura (útil si no deben modificarse desde el admin)
+    readonly_fields = ("created_at", "updated_at")
+
+    # Configura el número de resultados por página
+    list_per_page = 25

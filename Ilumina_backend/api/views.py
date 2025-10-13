@@ -12,8 +12,9 @@ from .models import *
 from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from .utils.load import load_file
-from .utils.budget import get_budget
+from .utils.budget import get_budget, final_budget
 from django.contrib.auth.models import User
+import json
 
 
 class HomeView(TemplateView):
@@ -25,11 +26,12 @@ class LoadFileView(LoginRequiredMixin,TemplateView):
 
     def post(self, request: HttpRequest):
         file = request.FILES.get('data')
+        year = request.POST.get('year')
         if str(file).split('.')[1] != 'xlsx':
             return JsonResponse({"detail": "El archivo tiene que ser un xlsx"}, status=400)
         if not file:
             return JsonResponse({"detail": "No se recibió archivo"}, status=400)
-        df = load_file(file)
+        df = load_file(file, year)
         if df:
             return JsonResponse({"detail": f"Archivo '{file.name}' cargado correctamente ✅"})
         elif not df:
@@ -39,14 +41,91 @@ class UpdateRowView(View):
     def put(self):
         pass
 
+class BudgetAdjustmentView(LoginRequiredMixin, TemplateView):
+    template_name = 'adjust_budget.html'
 
-class LastBudgetTableView(LoginRequiredMixin,ListView):
-    template_name = 'last_budget.html'
-    context_object_name = 'data'
+class BudgetAdjustmentTableView(LoginRequiredMixin, View):
 
-    def get_queryset(self):
-        queryset = AnnualBudget.objects.all().values()
-        return list(queryset)
+    def get(self, request, *args, **kwargs):
+        registers = AdjustmentModel.objects.values(
+            "id",
+            "cc_code",
+            "cc_name",
+            "acc_code",
+            "acc_name",
+            "calculated_amount",
+            "adjustment",
+            "final_amount",
+            "justification",
+        )
+        return JsonResponse(list(registers), status=200, safe=False)
+
+class SaveBudgetAdjustmentView(LoginRequiredMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            # Parsear cuerpo JSON enviado desde Tabulator
+            data = json.loads(request.body)
+
+            if not isinstance(data, list) or not data:
+                return JsonResponse(
+                    {"detail": "No se recibieron datos válidos para guardar."},
+                    status=400
+                )
+
+            # Opcional: limpiar registros anteriores
+            AdjustmentModel.objects.all().delete()
+
+            # Construir lista de objetos
+            registers = [
+                AdjustmentModel(
+                    cc_code=row.get("cc_code"),
+                    cc_name=row.get("cc_name"),
+                    acc_code=row.get("acc_code"),
+                    acc_name=row.get("acc_name"),
+                    calculated_amount=row.get("calculated_amount") or 0
+                )
+                for row in data
+                if row.get("cc_code") and row.get("cc_name")
+            ]
+
+            # Guardar en bulk para eficiencia
+            AdjustmentModel.objects.bulk_create(registers)
+
+            return JsonResponse({
+                "detail": f"Se guardaron {len(registers)} registros correctamente ✅"
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"detail": "Error al decodificar JSON recibido."},
+                status=400
+            )
+
+        except Exception as e:
+            return JsonResponse(
+                {"detail": f"Error al guardar la tabla: {str(e)}"},
+                status=500
+            )
+        
+class UpdateBudgetAdjustmentView(LoginRequiredMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            if not data:
+                return JsonResponse({"detail": "No se recibieron datos."}, status=400)
+
+            for row in data:
+                AdjustmentModel.objects.filter(id=row.get("id")).update(
+                    adjustment=row.get("adjustment"),
+                    final_amount=final_budget(row.get("calculated_amount"), row.get("adjustment")),
+                    justification=row.get("justification")
+                )
+
+            return JsonResponse({"detail": "Cambios guardados correctamente ✅"})
+        except Exception as e:
+            return JsonResponse({"detail": f"Error al guardar los cambios: {str(e)}"}, status=400)
 
 
 class BudgetTableView(LoginRequiredMixin,TemplateView):

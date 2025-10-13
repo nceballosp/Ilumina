@@ -92,3 +92,21 @@ class AnnualBudget(models.Model):
     def __str__(self):
         cca = self.cost_center_account
         return f"{cca.cost_center.name} - {cca.account.name} - {self.year}"
+
+class AdjustmentModel(models.Model):
+    cc_code = models.CharField(max_length=50)
+    cc_name = models.CharField(max_length=255)
+    acc_code = models.CharField(max_length=50)
+    acc_name = models.CharField(max_length=255)
+    calculated_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+
+    adjustment = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    final_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    justification = models.TextField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.cc_name} - {self.acc_name}"
+
