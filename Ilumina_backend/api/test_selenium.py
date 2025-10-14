@@ -7,8 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from django.contrib.auth.models import User
 from django.test import Client
-from .models import AnnualBudget,CostCenterAccount,CostCenter,Account
+from .models import AnnualBudget, CostCenterAccount, CostCenter, Account
 from urllib.parse import urlparse
+
 
 class TabulatorFilterTests(StaticLiveServerTestCase):
     """
@@ -22,29 +23,32 @@ class TabulatorFilterTests(StaticLiveServerTestCase):
         # Usa Chrome, pero puedes cambiar por Firefox o Edge
         cls.username = "testuser"
         cls.password = "testpass123"
-        cls.user = User.objects.create_superuser(username=cls.username, password=cls.password)
-        
+        cls.user = User.objects.create_superuser(
+            username=cls.username, password=cls.password)
+
         # Setup objetos test para la tabla
         cc = CostCenter.objects.create(code='200', name='cc_name')
         acc = Account.objects.create(code='acc_code', name='acc_name')
         ccac = CostCenterAccount.objects.create(cost_center=cc, account=acc)
         ab = AnnualBudget.objects.create(cost_center_account=ccac, year=2025, budget_amount=10000,
-            executed_amount=1000, available_amount=19999)
+                                         executed_amount=1000, available_amount=19999)
         cc2 = CostCenter.objects.create(code='100', name='cc_name2')
         acc2 = Account.objects.create(code='acc_code2', name='acc_name2')
         ccac2 = CostCenterAccount.objects.create(cost_center=cc2, account=acc2)
         ab2 = AnnualBudget.objects.create(cost_center_account=ccac2, year=2025, budget_amount=10000,
-            executed_amount=1000, available_amount=19999)
+                                          executed_amount=1000, available_amount=19999)
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")  # sin interfaz gráfica
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         cls.driver = webdriver.Chrome(options=options)
         cls.driver.implicitly_wait(5)
+
     def setUp(self):
         # Crear un cliente de pruebas de Django y loguear para obtener la cookie de sesión
         client = Client()
-        logged_in = client.login(username=self.username, password=self.password)
+        logged_in = client.login(
+            username=self.username, password=self.password)
         assert logged_in, "No se pudo loguear el cliente de test; revisa las credenciales."
 
         # obtener el valor de sessionid del test client
@@ -68,6 +72,7 @@ class TabulatorFilterTests(StaticLiveServerTestCase):
         except Exception:
             cookie_dict.pop("domain", None)
             self.driver.add_cookie(cookie_dict)
+
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
@@ -81,29 +86,33 @@ class TabulatorFilterTests(StaticLiveServerTestCase):
         url = f"{self.live_server_url}/generate_budget/"
         self.driver.get(url)
         wait = WebDriverWait(self.driver, 10)
-        ipc_input = self.driver.find_element(By.ID,'ipc')
+        ipc_input = self.driver.find_element(By.ID, 'ipc')
         ipc_input.send_keys('4.8')
-        generate_button = self.driver.find_element(By.CSS_SELECTOR,'#generate-button')
+        generate_button = self.driver.find_element(
+            By.CSS_SELECTOR, '#generate-button')
         generate_button.click()
         # Esperar a que Tabulator esté cargado
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#table")))
         time.sleep(1)  # pequeño delay para asegurar renderizado
         # === 2. Contar filas antes del filtro ===
-        rows_before = self.driver.find_elements(By.CSS_SELECTOR, ".tabulator-row")
-        self.assertGreater(len(rows_before), 0, "No hay filas iniciales en la tabla")
+        rows_before = self.driver.find_elements(
+            By.CSS_SELECTOR, ".tabulator-row")
+        self.assertGreater(len(rows_before), 0,
+                           "No hay filas iniciales en la tabla")
 
         print(f"➡️ Filas antes del filtro: {len(rows_before)}")
 
         # === 3. Aplicar un filtro ===
         # Opción 1: filtro global
 
-        search_input = self.driver.find_element(By.CSS_SELECTOR, "#filter-value")
+        search_input = self.driver.find_element(
+            By.CSS_SELECTOR, "#filter-value")
         search_input.send_keys("100" + Keys.ENTER)
         time.sleep(1)
-    
 
         # === 4. Contar filas después del filtro ===
-        rows_after = self.driver.find_elements(By.CSS_SELECTOR, ".tabulator-row")
+        rows_after = self.driver.find_elements(
+            By.CSS_SELECTOR, ".tabulator-row")
 
         print(f"➡️ Filas después del filtro: {len(rows_after)}")
 
@@ -115,6 +124,7 @@ class TabulatorFilterTests(StaticLiveServerTestCase):
         )
         print("✅ El filtro redujo correctamente las filas visibles")
 
+
 class NegativeAccountReportTests(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
@@ -122,18 +132,19 @@ class NegativeAccountReportTests(StaticLiveServerTestCase):
         # Usa Chrome, pero puedes cambiar por Firefox o Edge
         cls.username = "testuser"
         cls.password = "testpass123"
-        cls.user = User.objects.create_superuser(username=cls.username, password=cls.password)
+        cls.user = User.objects.create_superuser(
+            username=cls.username, password=cls.password)
         # Setup objetos test para la tabla
         cc = CostCenter.objects.create(code='200', name='cc_name')
         acc = Account.objects.create(code='acc_code', name='acc_name')
         ccac = CostCenterAccount.objects.create(cost_center=cc, account=acc)
         ab = AnnualBudget.objects.create(cost_center_account=ccac, year=2025, budget_amount=10000,
-            executed_amount=1000, available_amount=19999)
+                                         executed_amount=1000, available_amount=19999)
         cc2 = CostCenter.objects.create(code='100', name='cc_name2')
         acc2 = Account.objects.create(code='acc_code2', name='acc_name2')
         ccac2 = CostCenterAccount.objects.create(cost_center=cc2, account=acc2)
         ab2 = AnnualBudget.objects.create(cost_center_account=ccac2, year=2025, budget_amount=10000,
-            executed_amount=-1000, available_amount=19999)
+                                          executed_amount=-1000, available_amount=19999)
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")  # sin interfaz gráfica
         options.add_argument("--no-sandbox")
@@ -144,7 +155,8 @@ class NegativeAccountReportTests(StaticLiveServerTestCase):
     def setUp(self):
         # Crear un cliente de pruebas de Django y loguear para obtener la cookie de sesión
         client = Client()
-        logged_in = client.login(username=self.username, password=self.password)
+        logged_in = client.login(
+            username=self.username, password=self.password)
         assert logged_in, "No se pudo loguear el cliente de test; revisa las credenciales."
 
         # obtener el valor de sessionid del test client
@@ -168,17 +180,21 @@ class NegativeAccountReportTests(StaticLiveServerTestCase):
         except Exception:
             cookie_dict.pop("domain", None)
             self.driver.add_cookie(cookie_dict)
+
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
         super().tearDownClass()
+
     def test_report_generated(self):
         url = f"{self.live_server_url}/report/"
         self.driver.get(url)
         time.sleep(2)
         rows = self.driver.find_elements(By.CSS_SELECTOR, ".tabulator-row")
         for row in rows:
-            executed_amount = row.find_element(By.CSS_SELECTOR,"div[tabulator-field='executed_amount']").text
-            self.assertLessEqual(int(executed_amount.replace('.','')),0,'El valor ejecutado no es < a 0 ❌')
+            executed_amount = row.find_element(
+                By.CSS_SELECTOR, "div[tabulator-field='executed_amount']").text
+            self.assertLessEqual(int(executed_amount.replace(
+                '.', '')), 0, 'El valor ejecutado no es < a 0 ❌')
         print('Todas las filas mostradas tienen valores ejecutados negativos ✅')
         wait = WebDriverWait(self.driver, 10)

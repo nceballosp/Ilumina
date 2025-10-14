@@ -51,7 +51,7 @@ class AdjustmentModelAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-   # Campos que serán buscables desde la barra superior
+    # Campos que serán buscables desde la barra superior
     search_fields = (
         "cost_center_account",
     )

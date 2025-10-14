@@ -73,9 +73,11 @@ def get_budget(ipc: float):
     final_table['Presupuesto Calculado'] = round(
         final_table[f'Presupuesto_{last_year}'] * (1 + (ipc / 100)), 0)
 
-    json_str = final_table.fillna(0).to_json(orient="records", force_ascii=False)
+    json_str = final_table.fillna(0).to_json(
+        orient="records", force_ascii=False)
     data = json.loads(json_str)
     return data
+
 
 def parse_number(value):
     """
@@ -101,6 +103,7 @@ def parse_number(value):
         return Decimal(value)
     except InvalidOperation:
         return Decimal("0")
+
 
 def final_budget(calculated, adjustment):
     calculated = parse_number(calculated)

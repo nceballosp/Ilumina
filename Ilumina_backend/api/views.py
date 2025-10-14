@@ -25,12 +25,14 @@ class LoadFileView(SuperUserRequiredMixin, TemplateView):
         file = request.FILES.get('data')
         year = request.POST.get('year')
         if str(file).split('.')[1] != 'xlsx':
-            return JsonResponse({"detail": "El archivo tiene que ser un xlsx"}, status=400)
+            return JsonResponse({"detail": "El archivo tiene que ser un xlsx"},
+                                status=400)
         if not file:
-            return JsonResponse({"detail": "No se recibió archivo"}, status=400)
+            return JsonResponse({"detail": "No se recibió archivo"},
+                                status=400)
         df = load_file(file, year)
         if df:
-            return JsonResponse({"detail": f"Archivo '{file.name}' cargado correctamente ✅"})
+            return JsonResponse({"detail": f"Archivo '{file.name}' cargado correctamente"})
         elif not df:
             return JsonResponse({"detail": f"Algo salio mal cargando los datos, revisar formato del archivo"})
 
