@@ -138,7 +138,7 @@ class BudgetTableView(LoginRequiredMixin, TemplateView):
     template_name = 'budget.html'
 
     def post(self, request: HttpRequest):
-        ipc: float = float(request.GET.get('ipc', 0))
+        ipc: float = float(request.POST.get('ipc', 0))
         df: list = get_budget(ipc)
         if df:
             return JsonResponse(data=df, status=200, safe=False)

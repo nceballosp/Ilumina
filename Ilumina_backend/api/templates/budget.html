@@ -14,7 +14,7 @@
         placeholder="ej: 4.7"
         step="any"
       />
-      <button class="rounded-lg bg-iluminab border-ilumina border-2 text-white text-xl font-semibold p-2.5 w-35 cursor-pointer" type="submit">
+      <button class="rounded-lg bg-iluminab border-ilumina border-2 text-white text-xl font-semibold p-2.5 w-35 cursor-pointer" id="generate-button" type="submit">
         Generar
       </button>
       <!-- Agregar funcionalidad -->
@@ -70,10 +70,10 @@
     const response = await fetch("{% url 'budget' %}", {
       method: "POST",
       headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
           "X-CSRFToken": csrftoken, 
       },
-      body: {'ipc':ipc}
+      body: new URLSearchParams({'ipc':ipc})
       });
 
     if (response.ok) {
