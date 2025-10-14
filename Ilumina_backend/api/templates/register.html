@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Crear Cuenta{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<div class="flex justify-center items-center min-h-screen bg-body p-4">
+  <div class="bg-white px-14 py-8 rounded-xl shadow-md w-full max-w-lg">
+    <h2 class="text-3xl font-semibold mb-6 text-center text-ilumina">Crear tu cuenta</h2>
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      
+      <!-- Campo usuario -->
+      <div>
+        <label for="id_username" class="block text-sm font-medium text-ilumina mb-1">Usuario</label>
+        <input type="text" name="username" id="id_username"
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-iluminac focus:outline-none"
+               value="{{ form.username.value|default:'' }}">
+        {% if form.username.errors %}
+          <p class="text-sm text-red-500 mt-1">{{ form.username.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="id_name" class="block text-sm font-medium text-ilumina mb-1">Nombre</label>
+        <input type="text" name="first_name" id="id_name"
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-iluminac focus:outline-none"
+               value="{{ form.firstname.value|default:'' }}">
+        {% if form.firstname.errors %}
+          <p class="text-sm text-red-500 mt-1">{{ form.firstname.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="id_lastname" class="block text-sm font-medium text-ilumina mb-1">Apellido</label>
+        <input type="text" name="last_name" id="id_lastname"
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-iluminac focus:outline-none"
+               value="{{ form.lastname.value|default:'' }}">
+        {% if form.lastname.errors %}
+          <p class="text-sm text-red-500 mt-1">{{ form.lastname.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Campo email -->
+      <div>
+        <label for="id_email" class="block text-sm font-medium text-ilumina mb-1">Correo electrónico</label>
+        <input type="email" name="email" id="id_email"
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-iluminac focus:outline-none"
+               value="{{ form.email.value|default:'' }}">
+        {% if form.email.errors %}
+          <p class="text-sm text-red-500 mt-1">{{ form.email.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Contraseñas -->
+      <div>
+        <label for="id_password1" class="block text-sm font-medium text-ilumina mb-1">Contraseña</label>
+        <input type="password" name="password1" id="id_password1"
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-iluminac focus:outline-none">
+        {% if form.password1.errors %}
+          <p class="text-sm text-red-500 mt-1">{{ form.password1.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="id_password2" class="block text-sm font-medium text-ilumina mb-1">Repite la contraseña</label>
+        <input type="password" name="password2" id="id_password2"
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-iluminac focus:outline-none">
+        {% if form.password2.errors %}
+          <p class="text-sm text-red-500 mt-1">{{ form.password2.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit"
+              class="w-full bg-iluminad text-ilumina py-2 rounded-lg cursor-pointer my-2">
+        Crear cuenta
+      </button>
+
+      <p class="text-sm text-center mt-2 text-ilumina">
+      ¿Ya tienes cuenta?
+      <a href="{% url 'login' %}" class="text-iluminac hover:underline">Inicia sesión aquí</a>
+    </p>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -18,8 +18,6 @@ __pycache__/
 
 # Archivos de configuración/locales
 .env
-*.sqlite3
-
 # Archivos de test coverage
 htmlcov/
 .coverage
@@ -37,8 +35,7 @@ coverage.xml
 *.sublime-project
 *.sublime-workspace
 
-# Archivos de base de datos
-db.sqlite3
+
 
 # Archivos de migraciones que no quieres compartir (opcional, si generas mucho)
 **/migrations/*.pyc
@@ -46,11 +43,8 @@ db.sqlite3
 # **/migrations/ si deseas ignorarlas completamente (no recomendado para trabajo en equipo)
 
 # Archivos de Django generados
-staticfiles/
-static/
 media/documents/*
 
-*.pot
 
 # Archivos de Docker (si usas)
 *.pid

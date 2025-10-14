@@ -37,13 +37,13 @@ def _norm_code(val) -> str:
     return s
 
 
-def load_file(file):
+def load_file(file, year):
 
     xls = pd.ExcelFile(file)
     sheet_names = xls.sheet_names
     table = pd.read_excel(
         file,
-        sheet_name=sheet_names[0],  # !!! Normalizar segun como venga de SIPRES
+        sheet_name=sheet_names[0],
         dtype=str,
         keep_default_na=False,
     )
@@ -59,7 +59,7 @@ def load_file(file):
     COL_EXECUTED_AMOUNT = "Ejecutado al periodo"
     COL_AVAILABLE_AMOUNT = "Disponible al periodo"
 
-    YEAR = sheet_names[0]
+    YEAR = year
 
     # Limpieza en bloque
     table[COL_CC_NAME] = table[COL_CC_NAME].map(_norm_text)

@@ -1,6 +1,8 @@
 import pandas as pd
 import json
 from ..models import AnnualBudget
+import re
+from decimal import Decimal, InvalidOperation
 
 
 def get_budget(ipc: float):
@@ -71,6 +73,37 @@ def get_budget(ipc: float):
     final_table['Presupuesto Calculado'] = round(
         final_table[f'Presupuesto_{last_year}'] * (1 + (ipc / 100)), 0)
 
-    json_str = final_table.to_json(orient="records", force_ascii=False)
+    json_str = final_table.fillna(0).to_json(orient="records", force_ascii=False)
     data = json.loads(json_str)
     return data
+
+def parse_number(value):
+    """
+    Convierte strings tipo '1.234.567,89' o '1,234,567.89' en Decimal limpio.
+    Si el valor ya es numérico, lo devuelve igual.
+    """
+    if value is None or value == "":
+        return Decimal("0")
+    if isinstance(value, (int, float, Decimal)):
+        return Decimal(str(value))
+
+    # Elimina espacios
+    value = str(value).strip()
+
+    # Detecta formato europeo (1.234.567,89)
+    if re.match(r"^[\d.]+,\d+$", value):
+        value = value.replace(".", "").replace(",", ".")
+    # Detecta formato anglosajón (1,234,567.89)
+    elif re.match(r"^[\d,]+\.\d+$", value):
+        value = value.replace(",", "")
+
+    try:
+        return Decimal(value)
+    except InvalidOperation:
+        return Decimal("0")
+
+def final_budget(calculated, adjustment):
+    calculated = parse_number(calculated)
+    adjustment = parse_number(adjustment)
+    result = calculated + adjustment
+    return result

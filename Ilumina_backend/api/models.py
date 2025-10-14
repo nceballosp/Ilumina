@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 
 class Account(models.Model):
@@ -23,6 +24,7 @@ class Account(models.Model):
 
 
 class CostCenter(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     code = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
@@ -90,3 +92,23 @@ class AnnualBudget(models.Model):
     def __str__(self):
         cca = self.cost_center_account
         return f"{cca.cost_center.name} - {cca.account.name} - {self.year}"
+
+
+class AdjustmentModel(models.Model):
+    cost_center_account = models.ForeignKey(
+        CostCenterAccount, on_delete=models.CASCADE)
+
+    calculated_amount = models.DecimalField(
+        max_digits=18, decimal_places=2, default=0)
+
+    adjustment = models.DecimalField(
+        max_digits=18, decimal_places=2, default=0)
+    final_amount = models.DecimalField(
+        max_digits=18, decimal_places=2, default=0)
+    justification = models.TextField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.cost_center_account.cost_center.name} - {self.cost_center_account.account.name}"

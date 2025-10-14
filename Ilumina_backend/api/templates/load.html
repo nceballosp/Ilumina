@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Cargar Archivo{% endblock %}
+{% block content %}
+<div class="flex-col pt-4 pb-4 bg-body max-w-full min-h-screen">    
+  <p class="text-3xl font-semibold text-ilumina text-center pt-8 pb-10">CARGAR ARCHIVO</p>
+  <div class="flex justify-center bg-body max-w-full min-h-screen">
+    <div>
+      <form id="uploadForm" class="flex space-x-4 text-2xl" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label class="flex justify-center items-center border-2 rounded-lg p-2.5 text-xl font-medium text-ilumina cursor-pointer" for="data">
+          📄
+          <p class="px-2" id="fileName">Cargar Archivo</p>
+        </label>
+        <input class="hidden" id="data" name="data" type="file" accept=".xlsx"/>
+        <input id="year" class="flex justify-center items-center border-2 rounded-lg p-2.5 text-xl font-medium text-ilumina w-30" type="text" placeholder="Año">
+        <button type="submit" class="px-2.5 w-30 text-white text-xl font-medium bg-iluminab rounded-lg cursor-pointer">
+          Enviar
+        </button>
+      </form>
+
+      <div id="message" class="mt-4 p-2 rounded-lg bg-white text-green-700 hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+document.getElementById('data').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  document.getElementById('fileName').innerText = file ? file.name : 'Cargar Archivo';
+});
+
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fileInput = document.getElementById('data');
+  const yearInput = document.getElementById('year')
+  if (!fileInput.files.length) {
+    alert('Por favor selecciona un archivo para cargar');
+    return;
+  }
+  if (!yearInput.value) {
+    alert('Por favor ingrese el año correspondiente al archivo')
+    return;
+  }
+  const formData = new FormData();
+  formData.append('data', fileInput.files[0]);
+  formData.append('year', yearInput.value);
+
+  const messageBox = document.getElementById('message');
+  messageBox.classList.remove('hidden');
+  messageBox.textContent = 'Cargando archivo...';
+
+  try {
+    const response = await fetch("{% url 'load' %}", { 
+        method: 'POST',
+        headers: {
+            "X-CSRFToken": csrftoken, 
+        }, 
+        body: formData, 
+        });
+    const json = await response.json();
+    messageBox.textContent = json.detail || 'Archivo cargado correctamente ✅';
+  } catch (err) {
+    messageBox.textContent = 'Error de red o servidor no disponible';
+  }
+});
+</script>
+{% endblock %}
