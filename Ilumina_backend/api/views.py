@@ -2,18 +2,18 @@ from typing import Any
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import ListView, TemplateView, CreateView, View
 from .forms import RegisterForm
 from django.contrib import messages
-
 from .models import *
 from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from .utils.load import load_file
 from .utils.budget import get_budget, final_budget
 from django.contrib.auth.models import User
+from django.db.models import Max
 import json
 
 
@@ -21,7 +21,7 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
 
-class LoadFileView(LoginRequiredMixin,TemplateView):
+class LoadFileView(LoginRequiredMixin, TemplateView):
     template_name = 'load.html'
 
     def post(self, request: HttpRequest):
@@ -37,12 +37,15 @@ class LoadFileView(LoginRequiredMixin,TemplateView):
         elif not df:
             return JsonResponse({"detail": f"Algo salio mal cargando los datos, revisar formato del archivo"})
 
+
 class UpdateRowView(View):
     def put(self):
         pass
 
+
 class BudgetAdjustmentView(LoginRequiredMixin, TemplateView):
     template_name = 'adjust_budget.html'
+
 
 class BudgetAdjustmentTableView(LoginRequiredMixin, View):
 
@@ -59,6 +62,7 @@ class BudgetAdjustmentTableView(LoginRequiredMixin, View):
             "justification",
         )
         return JsonResponse(list(registers), status=200, safe=False)
+
 
 class SaveBudgetAdjustmentView(LoginRequiredMixin, View):
 
@@ -93,7 +97,7 @@ class SaveBudgetAdjustmentView(LoginRequiredMixin, View):
             AdjustmentModel.objects.bulk_create(registers)
 
             return JsonResponse({
-                "detail": f"Se guardaron {len(registers)} registros correctamente ✅"
+                "detail": f"Se guardaron {len(registers)} registros correctamente"
             })
 
         except json.JSONDecodeError:
@@ -107,7 +111,8 @@ class SaveBudgetAdjustmentView(LoginRequiredMixin, View):
                 {"detail": f"Error al guardar la tabla: {str(e)}"},
                 status=500
             )
-        
+
+
 class UpdateBudgetAdjustmentView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
@@ -119,16 +124,17 @@ class UpdateBudgetAdjustmentView(LoginRequiredMixin, View):
             for row in data:
                 AdjustmentModel.objects.filter(id=row.get("id")).update(
                     adjustment=row.get("adjustment"),
-                    final_amount=final_budget(row.get("calculated_amount"), row.get("adjustment")),
+                    final_amount=final_budget(
+                        row.get("calculated_amount"), row.get("adjustment")),
                     justification=row.get("justification")
                 )
 
-            return JsonResponse({"detail": "Cambios guardados correctamente ✅"})
+            return JsonResponse({"detail": "Cambios guardados correctamente"})
         except Exception as e:
             return JsonResponse({"detail": f"Error al guardar los cambios: {str(e)}"}, status=400)
 
 
-class BudgetTableView(LoginRequiredMixin,TemplateView):
+class BudgetTableView(LoginRequiredMixin, TemplateView):
     template_name = 'budget.html'
 
     def post(self, request: HttpRequest):
@@ -159,3 +165,20 @@ class LogoutUserView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         messages.info(request, "Has cerrado sesión correctamente.")
         return super().dispatch(request, *args, **kwargs)
+
+
+class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'api.add_account'
+    raise_exception = True
+
+
+class NegativeAccountReportView(ListView):
+    template_name = 'report.html'
+    model = AnnualBudget
+    context_object_name = 'data'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        last_year = queryset.aggregate(Max('year')).get('year__max')
+        queryset = queryset.filter(executed_amount__lt=0, year=last_year)
+        return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'executed_amount', 'year'))
