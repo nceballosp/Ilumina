@@ -39,36 +39,30 @@ class CostCenterAccountAdmin(admin.ModelAdmin):
                      "account__code", "account__name")
     list_select_related = ("cost_center", "account")
 
+
 @admin.register(AdjustmentModel)
 class AdjustmentModelAdmin(admin.ModelAdmin):
     # Campos que se mostrarán en la lista del admin
     list_display = (
-        "cc_code",
-        "cc_name",
-        "acc_code",
-        "acc_name",
+        "cost_center_account",
         "calculated_amount",
         "adjustment",
         "final_amount",
         "updated_at",
     )
 
-    # Campos que serán buscables desde la barra superior
+   # Campos que serán buscables desde la barra superior
     search_fields = (
-        "cc_code",
-        "cc_name",
-        "acc_code",
-        "acc_name",
+        "cost_center_account",
     )
 
     # Filtros laterales (opcional, pero útil)
     list_filter = (
-        "cc_name",
-        "acc_name",
+        "cost_center_account",
     )
 
     # Orden por defecto
-    ordering = ("cc_code", "acc_code")
+    ordering = ("cost_center_account",)
 
     # Campos de solo lectura (útil si no deben modificarse desde el admin)
     readonly_fields = ("created_at", "updated_at")

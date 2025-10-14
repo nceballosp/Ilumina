@@ -1,18 +1,15 @@
-from typing import Any
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import ListView, TemplateView, CreateView, View
 from .forms import RegisterForm
 from django.contrib import messages
-from .models import *
+from .mixins import SuperUserRequiredMixin
+from .models import AnnualBudget, AdjustmentModel, CostCenterAccount
 from django.http import HttpRequest
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from .utils.load import load_file
 from .utils.budget import get_budget, final_budget
-from django.contrib.auth.models import User
 from django.db.models import Max
 import json
 
@@ -21,7 +18,7 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
 
-class LoadFileView(LoginRequiredMixin, TemplateView):
+class LoadFileView(SuperUserRequiredMixin, TemplateView):
     template_name = 'load.html'
 
     def post(self, request: HttpRequest):
@@ -48,19 +45,19 @@ class BudgetAdjustmentView(LoginRequiredMixin, TemplateView):
 
 
 class BudgetAdjustmentTableView(LoginRequiredMixin, View):
-
     def get(self, request, *args, **kwargs):
         registers = AdjustmentModel.objects.values(
             "id",
-            "cc_code",
-            "cc_name",
-            "acc_code",
-            "acc_name",
+            "cost_center_account__cost_center__name",
+            "cost_center_account__cost_center__code",
+            "cost_center_account__account__name",
+            "cost_center_account__account__code",
             "calculated_amount",
             "adjustment",
             "final_amount",
             "justification",
         )
+
         return JsonResponse(list(registers), status=200, safe=False)
 
 
@@ -83,10 +80,8 @@ class SaveBudgetAdjustmentView(LoginRequiredMixin, View):
             # Construir lista de objetos
             registers = [
                 AdjustmentModel(
-                    cc_code=row.get("cc_code"),
-                    cc_name=row.get("cc_name"),
-                    acc_code=row.get("acc_code"),
-                    acc_name=row.get("acc_name"),
+                    cost_center_account=CostCenterAccount.objects.get(
+                        cost_center__code=row.get('cc_code'), account__code=row.get('acc_code')),
                     calculated_amount=row.get("calculated_amount") or 0
                 )
                 for row in data
@@ -134,7 +129,7 @@ class UpdateBudgetAdjustmentView(LoginRequiredMixin, View):
             return JsonResponse({"detail": f"Error al guardar los cambios: {str(e)}"}, status=400)
 
 
-class BudgetTableView(LoginRequiredMixin, TemplateView):
+class BudgetTableView(SuperUserRequiredMixin, TemplateView):
     template_name = 'budget.html'
 
     def post(self, request: HttpRequest):
@@ -170,9 +165,10 @@ class LogoutUserView(LogoutView):
 class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     permission_required = 'api.add_account'
     raise_exception = True
+    template_name = 'dashboard.html'
 
 
-class NegativeAccountReportView(ListView):
+class NegativeAccountReportView(SuperUserRequiredMixin, ListView):
     template_name = 'report.html'
     model = AnnualBudget
     context_object_name = 'data'
@@ -182,3 +178,17 @@ class NegativeAccountReportView(ListView):
         last_year = queryset.aggregate(Max('year')).get('year__max')
         queryset = queryset.filter(executed_amount__lt=0, year=last_year)
         return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'executed_amount', 'year'))
+
+
+class CoordinatorPortalView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    permission_required = 'api.add_account'
+    raise_exception = True
+    template_name = 'coordinator_portal.html'
+    model = AdjustmentModel
+    context_object_name = 'data'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(
+            cost_center_account__cost_center__user=self.request.user)
+        return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'adjustment', 'calculated_amount', 'justification', 'final_amount'))

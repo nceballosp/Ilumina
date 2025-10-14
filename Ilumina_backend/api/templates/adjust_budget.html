@@ -56,10 +56,10 @@
         height:'80vh',
         layout: 'fitColumns',
         columns: [
-          { title: "Centro de Costos", field: "cc_code", widthGrow: 1 },
-          { title: "Nombre del Centro de Costos", field: "cc_name", widthGrow: 2 },
-          { title: "Cuenta Contable", field: "acc_code", widthGrow: 1 },
-          { title: "Nombre de Cuenta", field: "acc_name", widthGrow: 2 },
+          { title: "Centro de Costos", field: "cost_center_account__cost_center__code", widthGrow: 1 },
+          { title: "Nombre del Centro de Costos", field: "cost_center_account__cost_center__name", widthGrow: 2 },
+          { title: "Cuenta Contable", field: "cost_center_account__account__code", widthGrow: 1 },
+          { title: "Nombre de Cuenta", field: "cost_center_account__account__name", widthGrow: 2 },
           {
             title: "Presupuesto Calculado",
             field: "calculated_amount",

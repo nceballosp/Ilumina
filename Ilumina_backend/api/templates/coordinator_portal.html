@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Portal{% endblock %}
+{% block content %}
+<div class="flex-col pt-4 pb-4 bg-body max-w-full min-h-screen">    
+    <p class="text-3xl font-semibold text-ilumina text-center pt-8 pb-6">PORTAL CENTRO DE COSTOS</p>
+    <div class="flex justify-center gap-6">
+      <button id="saveChanges"
+      class="rounded-lg bg-iluminab border-ilumina border-2 text-white text-xl font-semibold p-2.5 cursor-pointer">
+        Guardar Cambios
+      </button>
+      <button type="button" class="rounded-lg bg-iluminab border-ilumina border-2 text-white text-xl font-semibold p-2.5 w-35 cursor-pointer" id="exportButton">
+        Exportar
+      </button>
+      <button type="button" class="rounded-lg bg-iluminab border-ilumina border-2 text-white text-xl font-semibold p-2.5 w-35 cursor-pointer" id="exportButton">
+        <a href="{% url 'dashboard' %}" class="font-semibold hover:text-iluminac">Dashboard</a>
+      </button>
+      
+    </div>
+    
+    <div id="message" class="mt-4 p-2 rounded-lg bg-white text-green-700 hidden"></div>
+  </button>
+    <!-- Barra de Filtro -->
+  <div class="flex flex-col items-center justify-center mt-6" id="table-div">
+    <div class="flex space-x-3 items-center mb-7">
+      <p class="text-ilumina text-lg">Aplicar Filtro</p>
+      <select id="filter-field" class="border p-2  bg-white rounded-md"></select>
+      <select id="filter-type" class="border p-2 bg-white rounded-md">
+        <option class="border-ilumina border-1" value="like">Contiene</option>
+        <option value="=">Igual</option>
+        <option value="!=">Diferente</option>
+        <option value="<">Menor que</option>
+        <option value="<=">Menor o igual</option>
+        <option value=">">Mayor que</option>
+        <option value=">=">Mayor o igual</option>
+      </select>
+      <input id="filter-value" type="text" placeholder="Valor..." class="border p-2 rounded-md bg-white">
+      <button id="filter-clear" class="border px-3 py-2 rounded-md bg-iluminad cursor-pointer">Limpiar</button>
+    </div>
+    <div class="w-10/12 h-120 mx-4" id="table"></div>
+  </div>
+  <!-- Final Barra de Filtro -->
+</div>
+{{ data|json_script:"data-json" }}
+<script>
+        var table;
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const data = JSON.parse(document.getElementById('data-json').textContent);
+
+        table = new Tabulator('#table', {
+        data: data,
+        nestedFieldSeparator: false,
+        height:'80vh',
+        columns: [
+          { title: "Centro de Costos", field: "cost_center_account__cost_center__code" },
+          { title: "Nombre del Centro de Costos", field: "cost_center_account__cost_center__name" },
+          { title: "Cuenta Contable", field: "cost_center_account__account__code" },
+          { title: "Nombre de Cuenta", field: "cost_center_account__account__name" },
+          {
+            title: "Presupuesto Calculado",
+            field: "calculated_amount",
+            hozAlign: "right",
+            formatter: "money",
+            formatterParams: { thousand: ".", decimal: ",", precision: 0 },
+          },
+          {
+            title: "Ajuste",
+            field: "adjustment",
+            editor: "number",
+            hozAlign: "right",
+            formatter: "money",
+            formatterParams: { thousand: ".", decimal: ",", precision: 0 },
+          },
+          {
+            title: "Presupuesto Final",
+            field: "final_amount",
+            hozAlign: "right",
+            formatter: "money",
+            formatterParams: { thousand: ".", decimal: ",", precision: 0 },
+          },
+          {
+            title: "Justificación",
+            field: "justification",
+            editor: "textarea",
+            widthGrow: 3,
+          }
+        ],    
+        layout: 'fitColumns',
+        });
+
+        table.on('tableBuilt', () => {
+            const allCols = table.getColumns();
+            const fieldSelect = document.getElementById("filter-field");
+            fieldSelect.innerHTML = ''
+            allCols.forEach(col => {
+            const opt = document.createElement("option");
+            opt.value = col.getField();
+            opt.textContent = col.getDefinition().title || col.getField();
+            fieldSelect.appendChild(opt);
+            });
+        });
+        
+        function updateFilter() {
+        const field = document.getElementById("filter-field").value;
+        const type = document.getElementById("filter-type").value;
+        const value = document.getElementById("filter-value").value;
+        if (field && value !== "") {
+          table.addFilter(field, type, value);
+        } else {
+          table.clearFilter();
+        }
+        }
+
+        document.getElementById("filter-field").addEventListener("change", updateFilter);
+        document.getElementById("filter-type").addEventListener("change", updateFilter);
+        document.getElementById("filter-value").addEventListener("change", updateFilter);
+        document.getElementById("filter-clear").addEventListener("click", () => {
+            document.getElementById("filter-value").value = "";
+            table.clearFilter();
+        });
+
+        document.querySelector('#exportButton').addEventListener('click', () => {
+        if (table) table.download('xlsx', 'Reporte_Cuentas_Negativas.xlsx');
+        else alert('No hay tabla para exportar');
+        });
+    </script>
+
+{% endblock %}

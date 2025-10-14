@@ -25,9 +25,16 @@
 
         <div class="hidden md:flex space-x-10 text-white">
           {% if user.is_authenticated %}
+          {% if user.is_superuser %}
           <a href="{% url 'load' %}" class="font-semibold hover:text-iluminac">Cargar</a>
           <a href="{% url 'budget' %}" class="font-semibold hover:text-iluminac">Presupuesto</a>
           <a href="{% url 'adjust_budget' %}" class="font-semibold hover:text-iluminac">Ajuste</a>
+          {% endif %}
+
+          {% if perms.api.add_account %}
+          <a href="{% url 'portal' %}" class="font-semibold hover:text-iluminac">Portal</a>
+          {% endif %}
+
             <form method="post" action="{% url 'logout' %}">
               {% csrf_token %}
               <button type="submit" class="font-semibold text-red-600 hover:text-red-800">

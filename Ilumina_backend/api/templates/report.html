@@ -27,7 +27,6 @@
     {{ data|json_script:"data-json" }}
     <script>
         var table;
-        const form = document.querySelector('DOMContentLoaded');
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const data = JSON.parse(document.getElementById('data-json').textContent);
 
@@ -80,8 +79,6 @@
         if (table) table.download('xlsx', 'Reporte_Cuentas_Negativas.xlsx');
         else alert('No hay tabla para exportar');
         });
-
-
     </script>
 </div>
 {% endblock %}
