@@ -13,14 +13,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AdjustmentModel',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('cc_code', models.CharField(max_length=50)),
                 ('cc_name', models.CharField(max_length=255)),
                 ('acc_code', models.CharField(max_length=50)),
                 ('acc_name', models.CharField(max_length=255)),
-                ('calculated_amount', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
+                ('calculated_amount', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=18)),
                 ('adjustment', models.TextField(blank=True, null=True)),
-                ('final_amount', models.CharField(blank=True, max_length=255, null=True)),
+                ('final_amount', models.CharField(
+                    blank=True, max_length=255, null=True)),
                 ('justification', models.TextField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),

@@ -14,14 +14,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AdjustmentModel',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('calculated_amount', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('adjustment', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('final_amount', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('calculated_amount', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=18)),
+                ('adjustment', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=18)),
+                ('final_amount', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=18)),
                 ('justification', models.TextField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('cost_center_account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.costcenteraccount')),
+                ('cost_center_account', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='api.costcenteraccount')),
             ],
         ),
     ]

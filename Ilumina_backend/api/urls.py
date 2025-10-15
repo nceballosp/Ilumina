@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import HomeView, LoadFileView, BudgetTableView, BudgetAdjustmentView, SaveBudgetAdjustmentView, BudgetAdjustmentTableView, UpdateBudgetAdjustmentView, RegisterView, LoginUserView, LogoutUserView, NegativeAccountReportView, DashboardView, CoordinatorPortalView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
