@@ -23,7 +23,7 @@
         </div>
 
 
-        <div class="hidden md:flex space-x-10 text-white">
+        <div class="md:flex space-x-10 text-white">
           {% if user.is_authenticated %}
           {% if user.is_superuser %}
           <a href="{% url 'load' %}" class="font-semibold hover:text-iluminac">Cargar</a>
@@ -31,7 +31,7 @@
           <a href="{% url 'adjust_budget' %}" class="font-semibold hover:text-iluminac">Ajuste</a>
           {% endif %}
 
-          {% if perms.api.add_account %}
+          {% if perms.api.has_portal_access %}
           <a href="{% url 'portal' %}" class="font-semibold hover:text-iluminac">Portal</a>
           {% endif %}
 

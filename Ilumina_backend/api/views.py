@@ -163,7 +163,7 @@ class LogoutUserView(LogoutView):
 
 
 class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
-    permission_required = 'api.add_account'
+    permission_required = 'api.has_portal_access'
     raise_exception = True
     template_name = 'dashboard.html'
 
@@ -181,7 +181,7 @@ class NegativeAccountReportView(SuperUserRequiredMixin, ListView):
 
 
 class CoordinatorPortalView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    permission_required = 'api.add_account'
+    permission_required = 'api.has_portal_access'
     raise_exception = True
     template_name = 'coordinator_portal.html'
     model = AdjustmentModel
