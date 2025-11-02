@@ -10,6 +10,7 @@ from .models import AnnualBudget, AdjustmentModel, CostCenterAccount
 from django.http import HttpRequest
 from .utils.load import load_file
 from .utils.budget import get_budget, final_budget
+from .utils.dashboard import total_budget, get_data, pie_charts
 from django.db.models import Max
 import json
 
@@ -168,6 +169,16 @@ class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     permission_required = 'api.has_portal_access'
     raise_exception = True
     template_name = 'dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        budget = total_budget(self.request.user)
+
+        context.update({
+            'centros_budget': budget,
+        })
+
+        return context
 
 
 class NegativeAccountReportView(SuperUserRequiredMixin, ListView):
