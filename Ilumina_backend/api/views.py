@@ -6,7 +6,7 @@ from django.views.generic import ListView, TemplateView, CreateView, View
 from .forms import RegisterForm
 from django.contrib import messages
 from .mixins import SuperUserRequiredMixin
-from .models import AnnualBudget, AdjustmentModel, CostCenterAccount
+from .models import AnnualBudget, AdjustmentModel, CostCenterAccount, Comment
 from django.http import HttpRequest
 from .utils.load import load_file
 from .utils.budget import get_budget, final_budget
@@ -199,9 +199,29 @@ class CoordinatorPortalView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
     template_name = 'coordinator_portal.html'
     model = AdjustmentModel
     context_object_name = 'data'
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = Comment.objects.all()
+        context.update({
+            'comments':comments
+        })
+        return context
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(
             cost_center_account__cost_center__user=self.request.user)
         return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'adjustment', 'calculated_amount', 'justification', 'final_amount'))
+
+class CommentsView(ListView):
+    model = Comment
+    context_object_name = 'comments'
+
+
+class CommentCreateView(CreateView):
+    model = Comment
+    fields = ['content']
+    success_url = reverse_lazy('home')
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+

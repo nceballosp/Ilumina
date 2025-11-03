@@ -41,7 +41,37 @@
   <!-- Final Barra de Filtro -->
 </div>
 {{ data|json_script:"data-json" }}
+<div class="flex justify-center">
+  <p class="mt-12">Dejar Comentario:</p>
+  <form action="{% url 'create_comment' %}" method="post" id="comment-form">
+    {% csrf_token %}
+    <input name="content" id="comment" type="text" placeholder="" class="border m-5 p-2.5 w-60 rounded-md bg-white">
+    <button type="submit" class="p-1.5 mt-10 w-30 text-white text-xl font-medium bg-iluminab rounded-lg cursor-pointer">
+      Enviar
+    </button>
+  </form>
+</div>
+
+<div>
+  <p>Comentarios:</p>
+  {% for comment in comments %}
+    {{comment.content}}
+    {{comment.status}}
+  {% endfor %}
+</div>
 <script>
+        const comment_form = document.getElementById('comment-form');
+        comment_form.addEventListener('submit',(e)=>{
+          e.preventDefault();
+          const formData = new FormData(comment_form);
+          fetch(comment_form.action,{
+            method:'post',
+            body: formData
+          }
+          )
+          .then(response => response.ok?alert('comentario agregado'):alert('algo salio mal'))
+
+        })
         var table;
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const data = JSON.parse(document.getElementById('data-json').textContent);
