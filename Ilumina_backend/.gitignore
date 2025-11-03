@@ -1,24 +1,42 @@
-# Ignorar entornos virtuales
+# ==========================
+# ENTORNOS VIRTUALES
+# ==========================
 venv/
 .env/
 env/
 .venv/
-/__pycache__
+proyecto_2/
+Lib/
+Scripts/
 
-# Archivos de Python compilados
+# ==========================
+# ARCHIVOS PYTHON
+# ==========================
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Archivos de log y dumps
+# ==========================
+# LOGS Y DUMPS
+# ==========================
 *.log
 *.pot
 *.pyc
 *.pyo
+*.pid
+*.swp
 
-# Archivos de configuración/locales
+# ==========================
+# CONFIGURACIONES / SECRETOS
+# ==========================
 .env
-# Archivos de test coverage
+*.secret
+*.json
+config.local.py
+
+# ==========================
+# TESTS Y COVERAGE
+# ==========================
 htmlcov/
 .coverage
 .tox/
@@ -29,33 +47,46 @@ coverage.xml
 *.cover
 *.py,cover
 
-# Archivos de editor/IDE
+# ==========================
+# EDITORES / IDEs
+# ==========================
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
 
-
-
-# Archivos de migraciones que no quieres compartir (opcional, si generas mucho)
+# ==========================
+# MIGRACIONES (opcional)
+# ==========================
 **/migrations/*.pyc
 **/migrations/__pycache__/
-# **/migrations/ si deseas ignorarlas completamente (no recomendado para trabajo en equipo)
+# **/migrations/   # solo si quieres ignorarlas todas (no recomendado)
 
-# Archivos de Django generados
-media/documents/*
+# ==========================
+# DJANGO / MEDIA / STATIC
+# ==========================
+media/
+staticfiles/
+static/
+*.sqlite3
 
-
-# Archivos de Docker (si usas)
+# ==========================
+# DOCKER
+# ==========================
 *.pid
+*.log
 *.swp
 
-# Archivos de node (si usas npm/yarn para manejar frontend)
+# ==========================
+# FRONTEND (si usas React/Vite)
+# ==========================
 node_modules/
 build/
 dist/
 *.lock
 
-# Archivos temporales del sistema
+# ==========================
+# SISTEMA OPERATIVO
+# ==========================
 .DS_Store
 Thumbs.db
