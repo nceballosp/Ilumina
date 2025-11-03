@@ -10,7 +10,7 @@ from .models import AnnualBudget, AdjustmentModel, CostCenterAccount, Comment
 from django.http import HttpRequest
 from .utils.load import load_file
 from .utils.budget import get_budget, final_budget
-from .utils.dashboard import total_budget, get_data, pie_charts
+from .utils.dashboard import total_budget
 from django.db.models import Max
 import json
 
@@ -166,7 +166,7 @@ class LogoutUserView(LogoutView):
 
 
 class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
-    permission_required = 'api.has_portal_access'
+    permission_required = 'api.add_comment'
     raise_exception = True
     template_name = 'dashboard.html'
 
@@ -194,23 +194,26 @@ class NegativeAccountReportView(SuperUserRequiredMixin, ListView):
 
 
 class CoordinatorPortalView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    permission_required = 'api.has_portal_access'
+    permission_required = 'api.add_comment'
     raise_exception = True
     template_name = 'coordinator_portal.html'
     model = AdjustmentModel
     context_object_name = 'data'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         comments = Comment.objects.all()
         context.update({
-            'comments':comments
+            'comments': comments
         })
         return context
+
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(
             cost_center_account__cost_center__user=self.request.user)
         return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'adjustment', 'calculated_amount', 'justification', 'final_amount'))
+
 
 class CommentsView(ListView):
     model = Comment
@@ -221,7 +224,7 @@ class CommentCreateView(CreateView):
     model = Comment
     fields = ['content']
     success_url = reverse_lazy('home')
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-

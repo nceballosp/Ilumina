@@ -31,7 +31,7 @@
           <a href="{% url 'adjust_budget' %}" class="font-semibold hover:text-iluminac">Ajuste</a>
           {% endif %}
 
-          {% if perms.api.has_portal_access %}
+          {% if perms.api.add_comment %}
           <a href="{% url 'portal' %}" class="font-semibold hover:text-iluminac">Portal</a>
           {% endif %}
 

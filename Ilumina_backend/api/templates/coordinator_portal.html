@@ -39,10 +39,10 @@
     <div class="w-10/12 h-120 mx-4" id="table"></div>
   </div>
   <!-- Final Barra de Filtro -->
-</div>
+</div>  
 {{ data|json_script:"data-json" }}
 <div class="flex justify-center">
-  <p class="mt-12">Dejar Comentario:</p>
+  <p class="text-ilumina text-lg mt-12">Dejar Comentario:</p>
   <form action="{% url 'create_comment' %}" method="post" id="comment-form">
     {% csrf_token %}
     <input name="content" id="comment" type="text" placeholder="" class="border m-5 p-2.5 w-60 rounded-md bg-white">
@@ -53,10 +53,20 @@
 </div>
 
 <div>
-  <p>Comentarios:</p>
+  <p class="text-ilumina font-semibold text-xl mx-8">Comentarios:</p>
   {% for comment in comments %}
-    {{comment.content}}
-    {{comment.status}}
+  <div class="flex mx-9 mb-4">
+    <div class="flex border-1 border-iluminad p-2 mr-2 rounded-md ">
+      {{comment.content}}
+    </div>
+    <div class="flex">
+      <select class="text-ilumina rounded-md border-ilumina border-1" name="" id="">
+        <option value="pendiente">Pendiente</option>
+        <option value="en_progreso">En Progreso</option>
+        <option value="resuelto">Resuelto</option>
+      </select>
+    </div>
+  </div>
   {% endfor %}
 </div>
 <script>
