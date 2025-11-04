@@ -1,9 +1,66 @@
 {% extends 'base.html' %}
 {% block title %}Ilumina{% endblock %}
 {% block content %}
-<div class="flex justify-center bg-body max-w-full min-h-screen">
-      <h1 class="font-semibold text-3xl text-ilumina pt-8 pb-8">
-        Bienvenido a Ilumina
-      </h1>
-</div>
+{% load static %}
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ilumina — Presupuestos</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+      :root { --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af; --accent:#22c55e; }
+      body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial; background:linear-gradient(180deg,#0b1020,#0f172a); color:var(--text); }
+      header { display:flex; justify-content:space-between; align-items:center; padding:18px 24px; position:sticky; top:0; backdrop-filter:saturate(160%) blur(8px); background:rgba(15,23,42,.6); border-bottom:1px solid rgba(255,255,255,.06); }
+      .brand { font-weight:700; letter-spacing:.4px; }
+      .btn { display:inline-block; padding:10px 14px; border-radius:12px; text-decoration:none; font-weight:600; border:1px solid rgba(255,255,255,.12); }
+      .btn:hover { transform:translateY(-1px); }
+      .btn-accent { background:var(--accent); color:#0b1020; border:none; }
+      .btn-outline { color:var(--text); }
+      .hero { max-width:1100px; margin:48px auto 0; padding:0 24px; display:grid; gap:28px; grid-template-columns:1.1fr .9fr; align-items:center; }
+      .card { background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:22px; }
+      h1 { margin:0 0 10px; font-size:clamp(28px,3.4vw,40px); line-height:1.1; }
+      p.lead { margin:0 0 16px; color:var(--muted); font-size:18px; }
+      ul.steps { list-style:none; padding-left:0; margin:0; display:grid; gap:12px; }
+      ul.steps li { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:12px 14px; }
+      .links { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+      .pill { padding:8px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); text-decoration:none; color:var(--text); }
+      footer { max-width:1100px; margin:40px auto; padding:0 24px 40px; color:var(--muted); }
+      @media (max-width: 900px) {.hero{grid-template-columns:1fr;}}
+    </style>
+  </head>
+  <body>
+
+    <main class="hero">
+      <section class="card">
+        <h1>Genera tu presupuesto en minutos</h1>
+        <p class="lead">Sigue estos pasos y deja que Ilumina haga el trabajo pesado.</p>
+        <ul class="steps">
+          <li><strong>1) Cargar datos:</strong> sube archivos <code>.xlsx</code> de Sipres (mínimo 4 años) e indica el <em>año</em> correcto.</li>
+          <li><strong>2) Generar presupuesto:</strong> ingresa el <em>IPC</em> del año y presiona <em>Generar</em>. Luego podrás exportar, ver el reporte de cuentas en negativo o guardar.</li>
+          <li><strong>3) Filtrar/Limpiar:</strong> aplica filtros y presiona <em>Enter</em>. Usa <em>Limpiar</em> para volver a la tabla completa.</li>
+          <li><strong>4) Ajustes:</strong> revisa/edita <em>Ajuste</em> y <em>Justificación</em>, guarda cambios o exporta a Excel.</li>
+          <li><strong>5) Comentarios:</strong> gestiona solicitudes y marca su estado (Pendiente, En Progreso, Resuelto).</li>
+        </ul>
+      </section>
+
+      <aside class="card">
+        <h2>Accesos rápidos</h2>
+        <p class="lead">¿Ya tienes usuario?</p>
+        <div class="links">
+          <a href="{% url 'login' %}" class="btn btn-outline">Iniciar sesión</a>
+          <a href="{% url 'register' %}" class="btn btn-accent">Registrarse</a>
+        </div>
+        <p class="lead" style="margin-top:16px">Si eres el contador principal, ingresa con tu usuario (ej. <em>Contador</em>).</p>
+      </aside>
+    </main>
+
+    <footer>
+      <small>© Ilumina</small>
+    </footer>
+  </body>
+</html>
+
 {% endblock %}

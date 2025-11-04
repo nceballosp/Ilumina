@@ -9,7 +9,7 @@
 
     <form method="post" class="space-y-4">
       {% csrf_token %}
-      
+
       {% if form.non_field_errors %}
         <p class="text-red-500 text-sm text-center mb-2">
           {{ form.non_field_errors|striptags }}
@@ -43,7 +43,7 @@
               class="w-full bg-iluminad text-ilumina py-2 rounded-lg cursor-pointer mt-5">
         Entrar
       </button>
-    </form> 
+    </form>
 
     <p class="text-sm text-center mt-5 text-ilumina">
       ¿No tienes cuenta?
