@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Ilumina{% endblock %}
+{% block content %}
+<div class="min-h-screen **bg-body** p-6">
+    <div class="**bg-white** shadow-xl rounded-xl p-8 md:p-12 max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-**ilumina** pb-3 mb-6">
+            Guía de Uso: Contador
+        </h2>
+        
+        <ol class="list-decimal space-y-6 pl-5 text-gray-700">
+            <li class="font-bold text-lg">Inicio de Sesión y Superusuario</li>
+            <p class="ml-4">El usuario Contador debe ser un **superuser** creado previamente para acceder a todas las páginas y al admin de Django.</p>
+
+            <li class="font-bold text-lg">Cargar Archivos</li>
+            <p class="ml-4">Ve a la sección de <a class="text-ilumina font-semibold" href="{% url 'load' %}">cargar</a>. Sube archivos .xlsx de Sipres (mínimo los últimos 4 años) e indica el "año" correspondiente. Espera el mensaje de aprobación.</p>
+
+            <li class="font-bold text-lg">Generación y Ajuste del Presupuesto</li>
+            <p class="ml-4">En la sección de <a class="text-ilumina font-semibold" href="{% url 'budget' %}">presupuesto</a>, ingresa el IPC del año y haz clic en "Generar". Luego puedes exportar, ver el reporte de cuentas negativas o guardar la tabla. Usa la barra de filtro y presiona *Enter* para aplicar o "Limpiar" para resetear.</p>
+
+            <li class="font-bold text-lg">Ajuste de Auxiliares</li>
+            <p class="ml-4">En la página <a class="text-ilumina font-semibold" href="{% url 'adjust_budget' %}">ajuste</a>, puedes ver y modificar las columnas de Ajuste y Justificación creadas por las auxiliares. Guarda los cambios o exporta a Excel.</p>
+
+            <li class="font-bold text-lg">Comentarios y Solicitudes</li>
+            <p class="ml-4">La página <a class="text-ilumina font-semibold" href="{% url 'comments_board' %}">comentarios</a> te permite gestionar las solicitudes de los coordinadores, marcándolas como Pendiente, En Progreso o Resuelto.</p>
+
+            <li class="font-bold text-lg">Configuración de Usuarios y Centros (Admin)</li>
+            <p class="ml-4">Dirígete a la página <a class="text-ilumina font-semibold" href="/admin/">admin</a>. Una vez dentro, asigna cada usuario (Coordinador y Auxiliar) al grupo correspondiente en la sección "Usuarios". Luego, ve a "Centros de Costos" y asigna un Coordinador a cada centro.</p>
+        </ol>
+        
+        <div class="mt-6 text-center">
+            <a href="{% url 'home' %}" class="text-ilumina inline-block **bg-iluminad** hover:**bg-ilumina** font-bold py-2 px-6 rounded-lg transition duration-300">
+                Volver a Roles
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

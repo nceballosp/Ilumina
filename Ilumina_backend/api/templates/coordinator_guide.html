@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Ilumina{% endblock %}
+{% block content %}
+<div class="min-h-screen **bg-body** p-6">
+    <div class="**bg-white** shadow-xl rounded-xl p-8 md:p-12 max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-**iluminad** pb-3 mb-6">
+            Guía de Uso: Coordinador
+        </h2>
+        
+        <ol class="list-decimal space-y-6 pl-5 text-gray-700">
+            <li class="font-bold text-lg">Registro de Cuenta</li>
+            <p class="ml-4">Como coordinador, el primer paso es crearte una cuenta en la página de <a class="text-ilumina font-semibold" href="{% url 'register' %}">registrar</a>.</p>
+
+            <li class="font-bold text-lg">Inicio de Sesión</li>
+            <p class="ml-4">Una vez creada tu cuenta, inicia sesión con tus nuevas credenciales <a class="text-ilumina font-semibold" href="{% url 'login' %}">login</a>.</p>
+
+            <li class="font-bold text-lg">Visualización del Presupuesto en el Portal</li>
+            <p class="ml-4">Después de que el Contador te asigne tus Centros de Costos, dirígete a la página de <a class="text-ilumina font-semibold" href="{% url 'portal' %}">portal</a> para ver el presupuesto de tus centros.</p>
+        
+            <li class="font-bold text-lg">Funcionalidades de la Tabla</li>
+            <p class="ml-4">La tabla de presupuesto te permite:</p>
+            <ul class="list-disc ml-8 mt-2 space-y-1">
+                <li>Aplicar filtros para visualizar información específica.</li>
+                <li>Guardar cambios si realizas alguna modificación.</li>
+                <li>Exportar a Excel para trabajar con los datos fuera de la aplicación.</li>
+            </ul>
+            
+            <li class="font-bold text-lg">Creación de Comentarios</li>
+            <p class="ml-4">Puedes añadir comentarios y solicitudes sobre el presupuesto. Estos serán revisados y resueltos posteriormente por el Contador.</p>
+            
+            <li class="font-bold text-lg">Visualización del Dashboard</li>
+            <p class="ml-4">Finalmente, haz clic en el botón <a class="text-ilumina font-semibold" href="{% url 'dashboard' %}">dashboard</a> para ver un resumen visual de la información de tus centros. El dashboard es interactivo: puedes mostrar u ocultar las cuentas que desees para un mejor análisis.</p>
+            
+        </ol>
+        
+        <div class="mt-10 text-center">
+            <a href="{% url 'home' %}" class="inline-block **bg-ilumina** hover:**bg-iluminab** text-ilumina font-bold py-2 px-6 rounded-lg transition duration-300">
+                Volver a Selección de Rol
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

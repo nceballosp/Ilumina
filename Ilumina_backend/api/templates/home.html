@@ -1,9 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Ilumina{% endblock %}
 {% block content %}
-<div class="flex justify-center bg-body max-w-full min-h-screen">
-      <h1 class="font-semibold text-3xl text-ilumina pt-8 pb-8">
-        Bienvenido a Ilumina
-      </h1>
+<div class="bg-body max-w-full min-h-screen text-center">
+  <h1 class="font-semibold text-3xl text-ilumina pt-8 pb-8">
+    Bienvenido a Ilumina
+  </h1>
+
+  <p class="text-xl text-gray-600 mb-10">
+    Selecciona tu rol para ver los pasos de uso específicos de la aplicación.
+  </p>
+
+    <div class="flex flex-col md:flex-row justify-center space-y-6 md:space-y-0 md:space-x-8">
+      <a href="{% url 'accountant' %}" class="block w-50">
+        <button class="w-full cursor-pointer **bg-ilumina** hover:**bg-iluminab** text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg">
+          <span class="text-xl text-ilumina">Contador</span>
+        </button>
+      </a>
+
+      <a href="{% url 'coordinator' %}" class="block w-50">
+        <button class="w-full cursor-pointer **bg-iluminad** hover:**bg-iluminab** text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg">
+          <span class="text-xl text-ilumina">Coordinador</span>
+        </button>
+      </a>
+
+    </div>
 </div>
 {% endblock %}

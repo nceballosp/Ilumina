@@ -211,13 +211,13 @@ class CoordinatorPortalView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
         return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'adjustment', 'calculated_amount', 'justification', 'final_amount'))
 
 
-class CommentsView(LoginRequiredMixin,ListView):
+class CommentsView(LoginRequiredMixin, ListView):
     model = Comment
     context_object_name = 'comments'
     template_name = 'comments_board.html'
 
 
-class CommentCreateView(LoginRequiredMixin,CreateView):
+class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
     success_url = reverse_lazy('home')
@@ -226,8 +226,9 @@ class CommentCreateView(LoginRequiredMixin,CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class CommentUpdateView(LoginRequiredMixin,View):
-    def post(self,request:HttpRequest):
+
+class CommentUpdateView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest):
         comment_id = request.POST.get("id")
         new_status = request.POST.get("status")
 
@@ -241,3 +242,11 @@ class CommentUpdateView(LoginRequiredMixin,View):
             return JsonResponse({"success": True, "status": new_status})
         except Comment.DoesNotExist:
             return JsonResponse({"success": False, "error": "Comentario no encontrado."})
+
+
+class CoordinatorGuideView(LoginRequiredMixin, TemplateView):
+    template_name = 'coordinator_guide.html'
+
+
+class AccountantGuideView(LoginRequiredMixin, TemplateView):
+    template_name = 'accountant_guide.html'
