@@ -53,35 +53,7 @@
 </div>
 
 <div>
-  <p class="text-ilumina font-semibold text-xl mx-8">Comentarios:</p>
-  {% for comment in comments %}
-  <div class="flex mx-9 mb-4">
-    <div class="flex border-1 border-iluminad p-2 mr-2 rounded-md ">
-      {{comment.content}}
-    </div>
-    <div class="flex">
-      <select class="text-ilumina rounded-md border-ilumina border-1" name="" id="">
-        <option value="pendiente">Pendiente</option>
-        <option value="en_progreso">En Progreso</option>
-        <option value="resuelto">Resuelto</option>
-      </select>
-    </div>
-  </div>
-  {% endfor %}
-</div>
-<script>
-        const comment_form = document.getElementById('comment-form');
-        comment_form.addEventListener('submit',(e)=>{
-          e.preventDefault();
-          const formData = new FormData(comment_form);
-          fetch(comment_form.action,{
-            method:'post',
-            body: formData
-          }
-          )
-          .then(response => response.ok?alert('comentario agregado'):alert('algo salio mal'))
-
-        })
+  <script>
         var table;
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const data = JSON.parse(document.getElementById('data-json').textContent);

@@ -38,11 +38,6 @@ class LoadFileView(SuperUserRequiredMixin, TemplateView):
             return JsonResponse({"detail": f"Algo salio mal cargando los datos, revisar formato del archivo"})
 
 
-class UpdateRowView(View):
-    def put(self):
-        pass
-
-
 class BudgetAdjustmentView(LoginRequiredMixin, TemplateView):
     template_name = 'adjust_budget.html'
 
@@ -55,6 +50,7 @@ class BudgetAdjustmentTableView(LoginRequiredMixin, View):
             "cost_center_account__cost_center__code",
             "cost_center_account__account__name",
             "cost_center_account__account__code",
+            "cost_center_account__account__account_type",
             "calculated_amount",
             "adjustment",
             "final_amount",
@@ -215,12 +211,13 @@ class CoordinatorPortalView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
         return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'adjustment', 'calculated_amount', 'justification', 'final_amount'))
 
 
-class CommentsView(ListView):
+class CommentsView(LoginRequiredMixin,ListView):
     model = Comment
     context_object_name = 'comments'
+    template_name = 'comments_board.html'
 
 
-class CommentCreateView(CreateView):
+class CommentCreateView(LoginRequiredMixin,CreateView):
     model = Comment
     fields = ['content']
     success_url = reverse_lazy('home')
@@ -228,3 +225,19 @@ class CommentCreateView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+class CommentUpdateView(LoginRequiredMixin,View):
+    def post(self,request:HttpRequest):
+        comment_id = request.POST.get("id")
+        new_status = request.POST.get("status")
+
+        if not comment_id or not new_status:
+            return JsonResponse({"success": False, "error": "Datos incompletos."})
+
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            comment.status = new_status
+            comment.save()
+            return JsonResponse({"success": True, "status": new_status})
+        except Comment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Comentario no encontrado."})

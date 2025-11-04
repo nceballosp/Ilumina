@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class Account(models.Model):
     code = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
+    account_type = models.CharField(max_length=20,choices=[('Gastos', 'Gastos'), ('Ingresos', 'Ingresos')],default= 'Ingresos')
 
     class Meta:
         ordering = ["code"]

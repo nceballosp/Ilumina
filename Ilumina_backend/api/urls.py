@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HomeView,CommentCreateView, LoadFileView, BudgetTableView, BudgetAdjustmentView, SaveBudgetAdjustmentView, BudgetAdjustmentTableView, UpdateBudgetAdjustmentView, RegisterView, LoginUserView, LogoutUserView, NegativeAccountReportView, DashboardView, CoordinatorPortalView
+from .views import HomeView,CommentCreateView,CommentsView,CommentUpdateView, LoadFileView, BudgetTableView, BudgetAdjustmentView, SaveBudgetAdjustmentView, BudgetAdjustmentTableView, UpdateBudgetAdjustmentView, RegisterView, LoginUserView, LogoutUserView, NegativeAccountReportView, DashboardView, CoordinatorPortalView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -18,5 +18,7 @@ urlpatterns = [
     path('report/', NegativeAccountReportView.as_view(), name='report'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('portal/', CoordinatorPortalView.as_view(), name='portal'),
+    path('comments/', CommentsView.as_view(), name='comments_board'),
     path('create_comment/', CommentCreateView.as_view(), name='create_comment'),
+    path('update_comment/', CommentUpdateView.as_view(), name='update_comment'),
 ]

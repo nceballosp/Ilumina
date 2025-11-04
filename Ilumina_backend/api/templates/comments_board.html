@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Ilumina{% endblock %}
+{% block content %}
+<p class="text-ilumina font-semibold text-xl mx-8">Comentarios:</p>
+<div class="w-11/12 bg-gray-50 p-8 justify-self-center rounded-2xl grid grid-cols-3">
+    {% for comment in comments %}
+    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+        <div class="px-6 py-4">
+            <div class="font-bold text-xl mb-2">{{comment.user}}</div>
+            <hr>
+            <p class="text-gray-700 text-base">
+            {{comment.content}}
+            </p>
+        </div>
+        <div class="px-6 pt-4 pb-2">
+        <p>Estado:</p>
+        <div class="flex">
+            <form action="{% url 'update_comment' %}" class="comment-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{comment.id}}">
+                <select class="comment-status inline-block rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 {% if comment.status == 'pendiente' %}bg-blue-300 {% elif comment.status == 'en_progreso' %}bg-red-300{% elif comment.status == 'resuelto' %}bg-green-300{% endif %}" name="status">
+                    <option value="pendiente" {% if comment.status == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                    <option value="en_progreso" {% if comment.status == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+                    <option value="resuelto" {% if comment.status == 'resuelto' %}selected{% endif %}>Resuelto</option>
+                </select>
+            </form>
+
+        </div>
+
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+        const comment_selects= document.querySelectorAll('.comment-status');
+        comment_selects.forEach((element)=>{
+            element.addEventListener('change',(e)=>{
+                const value = e.target.value;
+                if (value == 'pendiente'){
+                    e.target.className = 'inline-block bg-blue-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2'
+                }
+                else if (value == 'en_progreso'){
+                    e.target.className = 'inline-block bg-red-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2'
+                    
+                }
+                else if (value == 'resuelto'){
+                    e.target.className = 'inline-block bg-green-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2'
+                    
+                }
+                const form = e.target.closest('.comment-form');
+                const formData = new FormData(form);
+                fetch(form.action,{
+                    method:'POST',
+                    body: formData
+                })
+                .then(response => response.ok?console.log('Actualizado Correctamente'):alert('Algo Salio Mal'))
+
+
+            })
+        })
+</script>
+{% endblock %}
