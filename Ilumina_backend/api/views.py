@@ -6,10 +6,11 @@ from django.views.generic import ListView, TemplateView, CreateView, View
 from .forms import RegisterForm
 from django.contrib import messages
 from .mixins import SuperUserRequiredMixin
-from .models import AnnualBudget, AdjustmentModel, CostCenterAccount
+from .models import AnnualBudget, AdjustmentModel, CostCenterAccount, Comment
 from django.http import HttpRequest
 from .utils.load import load_file
 from .utils.budget import get_budget, final_budget
+from .utils.dashboard import total_budget
 from django.db.models import Max
 import json
 
@@ -37,11 +38,6 @@ class LoadFileView(SuperUserRequiredMixin, TemplateView):
             return JsonResponse({"detail": f"Algo salio mal cargando los datos, revisar formato del archivo"})
 
 
-class UpdateRowView(View):
-    def put(self):
-        pass
-
-
 class BudgetAdjustmentView(LoginRequiredMixin, TemplateView):
     template_name = 'adjust_budget.html'
 
@@ -54,6 +50,7 @@ class BudgetAdjustmentTableView(LoginRequiredMixin, View):
             "cost_center_account__cost_center__code",
             "cost_center_account__account__name",
             "cost_center_account__account__code",
+            "cost_center_account__account__account_type",
             "calculated_amount",
             "adjustment",
             "final_amount",
@@ -165,9 +162,19 @@ class LogoutUserView(LogoutView):
 
 
 class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
-    permission_required = 'api.has_portal_access'
+    permission_required = 'api.add_comment'
     raise_exception = True
     template_name = 'dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        budget = total_budget(self.request.user)
+
+        context.update({
+            'centros_budget': budget,
+        })
+
+        return context
 
 
 class NegativeAccountReportView(SuperUserRequiredMixin, ListView):
@@ -183,14 +190,63 @@ class NegativeAccountReportView(SuperUserRequiredMixin, ListView):
 
 
 class CoordinatorPortalView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    permission_required = 'api.has_portal_access'
+    permission_required = 'api.add_comment'
     raise_exception = True
     template_name = 'coordinator_portal.html'
     model = AdjustmentModel
     context_object_name = 'data'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = Comment.objects.all()
+        context.update({
+            'comments': comments
+        })
+        return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(
             cost_center_account__cost_center__user=self.request.user)
         return list(queryset.values('cost_center_account__cost_center__code', 'cost_center_account__cost_center__name', 'cost_center_account__account__name', 'cost_center_account__account__code', 'adjustment', 'calculated_amount', 'justification', 'final_amount'))
+
+
+class CommentsView(LoginRequiredMixin, ListView):
+    model = Comment
+    context_object_name = 'comments'
+    template_name = 'comments_board.html'
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CommentUpdateView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest):
+        comment_id = request.POST.get("id")
+        new_status = request.POST.get("status")
+
+        if not comment_id or not new_status:
+            return JsonResponse({"success": False, "error": "Datos incompletos."})
+
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            comment.status = new_status
+            comment.save()
+            return JsonResponse({"success": True, "status": new_status})
+        except Comment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Comentario no encontrado."})
+
+
+class CoordinatorGuideView(LoginRequiredMixin, TemplateView):
+    template_name = 'coordinator_guide.html'
+
+
+class AccountantGuideView(LoginRequiredMixin, TemplateView):
+    template_name = 'accountant_guide.html'

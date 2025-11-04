@@ -1,5 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+
 <p class="text-3xl font-semibold text-ilumina text-center pt-8 pb-6">DASHBOARD</p>
+
+{% for centro in centros_budget %}
+<div>
+    <p class="text-2xl font-semibold text-ilumina p-8">{{centro.name}}</p>
+    <div class="px-10 flex justify-around">
+        <div class="flex flex-col">
+            <p class="text-xl font-semibold text-ilumina mb-2">Presupuesto total</p>
+            <p class="text-ilumina">{{centro.budget}}</p>
+        </div>
+        <div class="flex flex-col">
+            <p class="text-xl font-semibold text-ilumina mb-2">Gasto total</p>
+            <p class="text-ilumina">{{centro.executed}}</p>
+        </div>
+        <div class="flex flex-col">
+            <p class="text-xl font-semibold text-ilumina mb-2">% Cumplimiento</p>
+            <p class="text-ilumina">{{centro.accomplishment}}</p>
+        </div>
+    </div>
+    <div class="flex justify-center"> 
+        {{ centro.chart|safe }}
+    </div>
+</div>
+{% endfor %}
+
 {% endblock %}

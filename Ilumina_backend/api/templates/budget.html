@@ -94,7 +94,7 @@
         opt.textContent = col.getDefinition().title || col.getField();
         fieldSelect.appendChild(opt);
         });
-        allCols.slice(4).forEach(col => {
+        allCols.slice(5).forEach(col => {
           col.updateDefinition({
             formatter: "money",
             formatterParams: {
@@ -151,6 +151,7 @@
         cc_name: row["Nombre Centro de Costos"],
         acc_code: row["Cuenta Contable"],
         acc_name: row["Nombre Cuenta"],
+        acc_type: row["Tipo de Cuenta"],
         calculated_amount: row["Presupuesto Calculado"]
       }));
 

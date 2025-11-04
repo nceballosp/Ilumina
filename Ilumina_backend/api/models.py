@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class Account(models.Model):
     code = models.CharField(max_length=20)
     name = models.CharField(max_length=200)
+    account_type = models.CharField(max_length=20,choices=[('Gastos', 'Gastos'), ('Ingresos', 'Ingresos')],default= 'Ingresos')
 
     class Meta:
         ordering = ["code"]
@@ -43,7 +44,6 @@ class CostCenter(models.Model):
 
 
 class CostCenterAccount(models.Model):
-
     cost_center = models.ForeignKey(CostCenter, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -112,3 +112,14 @@ class AdjustmentModel(models.Model):
 
     def __str__(self):
         return f"{self.cost_center_account.cost_center.name} - {self.cost_center_account.account.name}"
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    content = models.TextField()
+    status = models.CharField(max_length=20,
+                              choices=[('pendiente', 'Pendiente'), 
+                                       ('en_progreso', 'En Progreso'),
+                                       ('resuelto', 'Resuelto')],
+                                       default= 'pendiente')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

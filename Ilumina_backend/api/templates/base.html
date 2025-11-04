@@ -26,13 +26,17 @@
         <div class="md:flex space-x-10 text-white">
           {% if user.is_authenticated %}
           {% if user.is_superuser %}
+          <a href="/admin/" class="font-semibold hover:text-iluminac">Admin</a>
           <a href="{% url 'load' %}" class="font-semibold hover:text-iluminac">Cargar</a>
           <a href="{% url 'budget' %}" class="font-semibold hover:text-iluminac">Presupuesto</a>
           <a href="{% url 'adjust_budget' %}" class="font-semibold hover:text-iluminac">Ajuste</a>
+          <a href="{% url 'comments_board' %}" class="font-semibold hover:text-iluminac">Comentarios</a>
           {% endif %}
 
-          {% if perms.api.has_portal_access %}
+          {% if not user.is_superuser %}
+          {% if perms.api.add_comment %}
           <a href="{% url 'portal' %}" class="font-semibold hover:text-iluminac">Portal</a>
+          {% endif %}
           {% endif %}
 
             <form method="post" action="{% url 'logout' %}">

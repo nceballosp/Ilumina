@@ -1,7 +1,9 @@
 from django.contrib import admin
-from .models import AnnualBudget, CostCenterAccount, CostCenter, Account, AdjustmentModel
+from .models import AnnualBudget, CostCenterAccount, CostCenter, Account, AdjustmentModel, Comment
 
 admin.site.register(AnnualBudget)
+
+admin.site.register(Comment)
 
 
 class AnnualBudgetInline(admin.TabularInline):

@@ -21,6 +21,7 @@ def get_budget(ipc: float):
             "cc_name": ab.cost_center_account.cost_center.name,
             "acc_code": ab.cost_center_account.account.code,
             "acc_name": ab.cost_center_account.account.name,
+            "acc_type": ab.cost_center_account.account.account_type,
             "year": ab.year,
             "budget": float(ab.budget_amount or 0),
             "executed": float(ab.executed_amount or 0),
@@ -30,7 +31,7 @@ def get_budget(ipc: float):
     df = pd.DataFrame(rows)
     # Pivot de budget
     df_budget = df.pivot_table(
-        index=["cc_code", "cc_name", "acc_code", "acc_name"],
+        index=["cc_code", "cc_name", "acc_code", "acc_name","acc_type"],
         columns="year",
         values="budget",
         fill_value=0
@@ -43,7 +44,7 @@ def get_budget(ipc: float):
     df_budget = df_budget.add_prefix("Presupuesto_").reset_index()
     last_year = df["year"].max()
     df_last = df[df["year"] == last_year][
-        ["cc_code", "cc_name", "acc_code", "acc_name", "executed", "available"]
+        ["cc_code", "cc_name", "acc_code", "acc_name","acc_type", "executed", "available"]
     ].rename(columns={
         "executed": f"Ejecucion_{last_year}",
         "available": f"Disponible_{last_year}",
@@ -53,12 +54,12 @@ def get_budget(ipc: float):
     final_table = pd.merge(
         df_budget,
         df_last,
-        on=["cc_code", "cc_name", "acc_code", "acc_name"],
+        on=["cc_code", "cc_name", "acc_code", "acc_name","acc_type"],
         how="left"
     )
 
     # Ordenar columnas
-    cols = ["cc_code", "cc_name", "acc_code", "acc_name"] + \
+    cols = ["cc_code", "cc_name", "acc_code", "acc_name","acc_type"] + \
         sorted([c for c in final_table.columns if c.startswith("Presupuesto_")]) + \
         [f"Ejecucion_{last_year}", f"Disponible_{last_year}"]
 
@@ -67,6 +68,7 @@ def get_budget(ipc: float):
         "cc_name": "Nombre Centro de Costos",
         "acc_code": "Cuenta Contable",
         "acc_name": "Nombre Cuenta",
+        "acc_type": "Tipo de Cuenta"
     })
     last_4 = [f'Presupuesto_{year}' for year in last_4]
     final_table['Promedio 4 años'] = final_table[last_4].sum(axis=1) / 4

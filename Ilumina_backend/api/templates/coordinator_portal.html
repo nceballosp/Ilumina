@@ -39,9 +39,21 @@
     <div class="w-10/12 h-120 mx-4" id="table"></div>
   </div>
   <!-- Final Barra de Filtro -->
-</div>
+</div>  
 {{ data|json_script:"data-json" }}
-<script>
+<div class="flex justify-center">
+  <p class="text-ilumina text-lg mt-12">Dejar Comentario:</p>
+  <form action="{% url 'create_comment' %}" method="post" id="comment-form">
+    {% csrf_token %}
+    <input name="content" id="comment" type="text" placeholder="" class="border m-5 p-2.5 w-60 rounded-md bg-white">
+    <button type="submit" class="p-1.5 mt-10 w-30 text-white text-xl font-medium bg-iluminab rounded-lg cursor-pointer">
+      Enviar
+    </button>
+  </form>
+</div>
+
+<div>
+  <script>
         var table;
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const data = JSON.parse(document.getElementById('data-json').textContent);
